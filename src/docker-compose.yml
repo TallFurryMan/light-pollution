@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: ha
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./config:/config
+  mqtt:
+    image: eclipse-mosquitto:2.0
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+  lora_gateway:
+    image: ghcr.io/lorawan/lora-gateway-docker:latest
+    container_name: lora_gateway
+    restart: unless-stopped
+    environment:
+      - MQTT_URL=tcp://mosquitto:1883
+      - MQTT_USER=homeassistant
+      - MQTT_PASSWORD=secret
+    volumes:
+      - ./lora:/etc/lora

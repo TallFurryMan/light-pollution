@@ -1,0 +1,33 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyd
+
+# MicroPython specific files
+*.uf2
+*.bin
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE / editor folders
+.vscode/
+
+# Build directories
+build/
+build-*/**
+
+# Environment configuration files
+.env
+.env.*
+
+# Node.js dependencies
+node_modules/
+
+# Log files
+*.log
+
+# Temporary scratch files
+*.tmp
+
