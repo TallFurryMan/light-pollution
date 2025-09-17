@@ -18,8 +18,8 @@ Copy the two Python files to the Pico’s filesystem and keep `config.json` on t
 {
   "name": "unit‑example",
   "lat": 43.58,
-  "lon": 123.45
+  "lon": 123.45,
+  "poll_interval": 900  # optional, seconds between measurements
 }
 ```
 Run `python SETUP.PY <name> <lat> <lon>` to generate a real configuration file that the device will read on boot.
-

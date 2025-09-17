@@ -28,7 +28,9 @@ adc = ADC(Pin(2))  # TEMT6000 on GP2
 spi = SPI(0, baudrate=5_000_000, sck=Pin(13), mosi=Pin(15), miso=Pin(14))
 lora = LoRa(spi, cs=18, rst=10, dio0=18)
 
-TIME_BETWEEN_READING = 900  # 15 minutes
+# Default measurement interval in seconds (15 minutes). Can be overridden
+# by the config JSON key ``poll_interval``.
+TIME_BETWEEN_READING = cfg.get("poll_interval", 900)
 
 def read_lux():
     raw = adc.read_u16()
@@ -46,4 +48,3 @@ while True:
     }
     lora.send(ujson.dumps(payload).encode())
     time.sleep(TIME_BETWEEN_READING)
-
