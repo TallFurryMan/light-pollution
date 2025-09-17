@@ -3,7 +3,7 @@
 The project is split into three major layers:
 | Layer | Components | Communication | Purpose |
 |-------|------------|---------------|---------|
-| **Device** | *Raspberry Pi Pico*, *LoRa RFM95*, *Analog light sensor* (e.g. TEMT6000), 4‑cell Li‑Po battery | LoRa | Local data acquisition & power‑efficient transmission |
+| **Device** | *Raspberry Pi Pico*, *LoRa RFM95*, *Light sensor* (TEMT6000, TSL2591 or BH1750), 4‑cell Li‑Po battery | LoRa | Local data acquisition & power‑efficient transmission |
    Firmware source: `src/firmware/*.py`
 | **Gateway** | Raspberry Pi 4 with **LoRa gateway Hat** (or RFM95 in a *“LoRa‑to‑MQTT”* container) and **Docker** homeassistant | LoRa ➜ MQTT | Bridge between sensor and cloud |
 | **Cloud** | Home Assistant container running on the same Raspberry‑Pi 4, exposed via `mqtt://` endpoint | MQTT | Store, process and visualize data |

@@ -5,6 +5,8 @@
 | Raspberry Pi Pico | 1 | Main microcontroller |
 | RFM95W LoRa breakout (433 MHz or 915 MHz) | 1 | 8‑bit SPI interface, 4‑pin header |
 | TEMT6000 light sensor (photodiode) | 1 | Analog output, low‑cost |
+| TSL2591 high‑sensitivity I²C lux meter | 1 | Digital, low‑light performance |
+| BH1750 digital lux sensor | 1 | Digital, simple I²C interface |
 | 2.5 V to 3.3 V regulator (e.g. AMS1117‑3.3) | 1 | Power sensor and sensor pin |
 | 4‑cell Li‑Po battery + charger module (MCP73831) | 1 | 4.2 V full charge |
 | 10 µF and 100 nF capacitors | 2 | Decoupling |
@@ -16,12 +18,16 @@
 ```
    Pico (3.3 V) ──> 3.3 V regulator ──> RFM95 (VCC)
    GND ──> GND (common)
-   GP2 (ADC0) ──> TEMT6000 OUT
-   GP15 (SPI0 MOSI) ──> RFM95 MOSI
-   GP14 (SPI0 MISO) ──> RFM95 MISO
-   GP13 (SPI0 SCK) ──> RFM95 SCK
-   GP18 (GPIO) ──> RFM95 NSS (DIO0 for IRQ)
-   Optional: GP10 (GPIO) ──> RFM95 RESET
+   **For TEMT6000**
+   GP2 (ADC0) ──> OUT
+   **For I²C sensors (TSL2591, BH1750)**
+   GP5 (I2C SCL) ──> SCL
+   GP4 (I2C SDA) ──> SDA
+   GP15 (SPI0 MOSI) ──> MOSI
+   GP14 (SPI0 MISO) ──> MISO
+   GP13 (SPI0 SCK) ──> SCK
+   GP18 (GPIO) ──> NSS (DIO0 for IRQ)
+   Optional: GP10 (GPIO) ──> RESET
 ```
 Make sure to tie the sensor VCC to the 3.3 V regulator, not the Pi’s 3.3 V line.
 ## 3. Power Consumption
@@ -37,4 +43,3 @@ With 15 mA idle and a 15 min measurement interval, a single **4‑cell Li‑
 * **Keep SPI traces short** – LoRa modules are sensitive to long wires.
 * **Ground‑plane** – Use the back of the enclosure or a copper sheet to ensure a common ground.
 * **Use DIP‑switch or header** – For the LoRa NSS pin, so you can change it without soldering.
-

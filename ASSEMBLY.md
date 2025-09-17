@@ -7,12 +7,61 @@ This guide walks you through building a **Light‑Pollution Monitor** from the p
 3. Hook the **3.3 V** of Pico to the positive rail.
 
 ## 2. Light sensor wiring
-1. Place the **TEMT6000** close to a **C‑shaped** board so you can see the light.
-2. Connect:
-   * **VCC** → 3.3 V rail.
-   * **GND** → GND rail.
-   * **OUT** → **GP2** (ADC0) on Pico.
-3. Add a 10 µF capacitor between VCC and GND close to the sensor for stability.
+The firmware now supports three different light sensors.  Pick the one that
+best matches your low‑light requirement and power budget.  All sensors are
+powered from the 3.3 V rail and share the same ground rail.  The Pico must
+be able to read the output using a suitable pin.
+
+### 2.1 TEMT6000 – cheap analog photodiode
+* **Description**: Single‑channel photodiode with linear output proportional
+  to light intensity.  Works best in the 100–100 000 lux range.
+* **Connection**:
+  * **VCC** → 3.3 V rail
+  * **GND** → GND rail
+  * **OUT** → **GP2** (ADC0) on Pico
+* **Notes**: Place a 10 µF electrolytic capacitor between VCC and GND near
+  the sensor for stability.
+
+```markdown
+![TEMT6000](https://cdn.shopify.com/s/files/1/0208/5938/files/TEMT6000.jpg?width=600)
+```
+
+### 2.2 TSL2591 – high‑sensitivity I²C lux meter
+* **Description**: Digital lux meter with programmable gain and integration
+  time.  Good for low‑light environments and provides a lux value directly.
+* **Connection**:
+  * **VCC** → 3.3 V rail
+  * **GND** → GND rail
+  * **SCL** → **GP5** (I²C SCL)
+  * **SDA** → **GP4** (I²C SDA)
+  * **ADDR** → leave pull‑ups high (default address 0x29)
+* **Notes**: I²C uses the Pico’s dedicated I²C bus; no extra pins are
+  required.
+
+```markdown
+![TSL2591](https://cdn-shop.adafruit.com/1200x1200/2835-01.jpg)
+```
+
+### 2.3 BH1750 – digital lux sensor
+* **Description**: I²C digital lux sensor that outputs a 16‑bit lux value.
+* **Connection**:
+  * **VCC** → 3.3 V rail
+  * **GND** → GND rail
+  * **SCL** → **GP5** (I²C SCL)
+  * **SDA** → **GP4** (I²C SDA)
+  * **ADDR** → leave pull‑ups high (default address 0x23)
+* **Notes**: Use the same I²C lines as the TSL2591 – just change the
+  address in the firmware or add a level‑shifter if needed.
+
+```markdown
+![BH1750](https://cdn-shop.adafruit.com/1200x1200/2837-01.jpg)
+```
+
+---
+**Optional** – When assembling on a small breadboard, use a dedicated
+header row for each sensor so that you can simply plug the sensor in and
+cut the leads later.  Keep the header pins in a separate row to avoid
+crosstalk and reduce the chance of soldering the main board.
 
 ## 3. LoRa module wiring
 1. Put the **RFM95** on the board. It has a 6‑pin pitch; use the jumper wires.
@@ -49,4 +98,3 @@ This guide walks you through building a **Light‑Pollution Monitor** from the p
 * Test LoRa transmission locally with the sample script (see `FIRMWARE.md`).
 
 Congratulations – the hardware is ready for code!
-
