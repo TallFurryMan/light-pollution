@@ -20,6 +20,11 @@ Copy the two Python files to the Pico’s filesystem and keep `config.json` on t
   "lat": 43.58,
   "lon": 123.45,
   "poll_interval": 900  # optional, seconds between measurements
+  "sensor_type": "TSL2591"  # optional, choose TEMT6000, TSL2591, or BH1750
 }
 ```
 Run `python SETUP.PY <name> <lat> <lon>` to generate a real configuration file that the device will read on boot.
+
+### Sensor selection
+Add ``sensor_type`` to the JSON to specify the light sensor. Supported values:
+``"TEMT6000"`` (ADC pin GP2), ``"TSL2591"`` (I²C, low‑light), and ``"BH1750"`` (I²C, digital lux). If omitted, the firmware defaults to **TSL2591**.
