@@ -76,15 +76,56 @@ class TEMT6000:
 
 
 sensor_type = cfg.get("sensor_type", "TSL2591")
+charger_type = cfg.get("charger_type", "none")
 
 if sensor_type in ("TSL2591", "BH1750"):
-    i2c = I2C(0, scl=Pin(5), sda=Pin(4))
+    sensor_i2c = I2C(0, scl=Pin(5), sda=Pin(4))
     if sensor_type == "TSL2591":
-        sensor = TSL2591(i2c)
+        sensor = TSL2591(sensor_i2c)
     else:
-        sensor = BH1750(i2c)
+        sensor = BH1750(sensor_i2c)
 else:
     sensor = TEMT6000()
+
+# Optional charger handling
+# The firmware only records the charger type in the payload; advanced
+# monitoring can be added later if needed.
+class BaseCharger:
+    def status(self):
+        """Return a simple status string"""
+        return "unknown"
+
+class MCP73871(BaseCharger):
+    ADDRESS = 0x2C
+
+    def __init__(self, i2c: I2C):
+        self.i2c = i2c
+
+    def status(self):
+        try:
+            data = self.i2c.readfrom_mem(self.ADDRESS, 0x02, 1)
+            code = data[0]
+            mapping = {
+                0x00: "Charging",
+                0x02: "Full",
+                0x04: "Fault",
+            }
+            return mapping.get(code, "unknown")
+        except Exception:
+            return "error"
+
+class TP4056(BaseCharger):
+    def status(self):
+        # TP4056 does not provide status registers; it is always in charge
+        return "charging"
+
+if charger_type == "MCP73871":
+    charger_i2c = I2C(1, scl=Pin(5), sda=Pin(4))
+    charger = MCP73871(charger_i2c)
+elif charger_type == "TP4056":
+    charger = TP4056()
+else:
+    charger = BaseCharger()
 
 spi = SPI(0, baudrate=5_000_000, sck=Pin(13), mosi=Pin(15), miso=Pin(14))
 lora_chip = cfg.get("lora_chip", "RFM95")
@@ -100,6 +141,8 @@ while True:
         "lon": cfg["lon"],
         "lux": lux_val,
         "ts": int(time.time()),
+        "charger_type": charger_type,
+        "charger_status": charger.status(),
     }
     lora.send(ujson.dumps(payload).encode())
     time.sleep(TIME_BETWEEN_READING)
