@@ -4,6 +4,7 @@
 |------|-----|-------|
 | Raspberry Pi Pico | 1 | Main microcontroller |
 | RFM95W LoRa breakout (433 MHz or 915 MHz) | 1 | 8‑bit SPI interface, 4‑pin header |
+| SX1278 LoRa breakout (868 MHz) | 1 | 8‑bit SPI interface, 4‑pin header |
 | TEMT6000 light sensor (photodiode) | 1 | Analog output, low‑cost |
 | TSL2591 high‑sensitivity I²C lux meter | 1 | Digital, low‑light performance |
 | BH1750 digital lux sensor | 1 | Digital, simple I²C interface |
@@ -20,14 +21,26 @@
    GND ──> GND (common)
    **For TEMT6000**
    GP2 (ADC0) ──> OUT
-   **For I²C sensors (TSL2591, BH1750)**
-   GP5 (I2C SCL) ──> SCL
-   GP4 (I2C SDA) ──> SDA
-   GP15 (SPI0 MOSI) ──> MOSI
-   GP14 (SPI0 MISO) ──> MISO
-   GP13 (SPI0 SCK) ──> SCK
-   GP18 (GPIO) ──> NSS (DIO0 for IRQ)
-   Optional: GP10 (GPIO) ──> RESET
+  **For I²C sensors (TSL2591, BH1750)**
+  GP5 (I2C SCL) ──> SCL
+  GP4 (I2C SDA) ──> SDA
+  GP15 (SPI0 MOSI) ──> MOSI
+  GP14 (SPI0 MISO) ──> MISO
+  GP13 (SPI0 SCK) ──> SCK
+  GP18 (GPIO) ──> NSS (DIO0 for IRQ)
+  Optional: GP10 (GPIO) ──> RESET
+```
+
+**Additional lines for SX1278**
+The SX1278 uses the same SPI signals (SCK, MOSI, MISO), but the GPIO
+assignment is slightly different: the NSS pin is on GP17, DIO0 on GP16
+and the RESET pin on GP18.  When using SX1278, replace the RFM95 wiring
+below with:
+```
+GP17 (NSS) ──> NSS
+GP16 (DIO0) ──> DIO0
+GP18 (RESET) ──> RESET
+```
 ```
 Make sure to tie the sensor VCC to the 3.3 V regulator, not the Pi’s 3.3 V line.
 ## 3. Power Consumption

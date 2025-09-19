@@ -2,16 +2,41 @@ import time
 from machine import Pin, SPI
 
 class LoRa:
-    """Very small LoRa helper that talks to an RFM95 module.
-    Uses the raw API – no LoRaWAN header.
+    """Very small LoRa helper that talks to an LoRa module.
+    Supports the *RFM95* (default) and the *SX1278* as an alternative
+    hardware variant.
+
+    Parameters
+    ----------
+    spi: machine.SPI
+        SPI instance.
+    cs: int
+        Chip‑select GPIO pin.
+    rst: int
+        Reset GPIO pin.
+    dio0: int
+        IRQ pin used to detect transmission end.
+    chip: str, optional
+        ``"RFM95"`` (default) or ``"SX1278"``.
+    freq: int, optional
+        Frequency in Hz – defaults to 915 MHz for RFM95 and 868 MHz
+        for SX1278.
     """
 
-    def __init__(self, spi, cs, rst, dio0, freq=915_000_000):
+    def __init__(self, spi, cs, rst, dio0, chip="RFM95", freq=None):
         self.spi = spi
         self.cs = Pin(cs, Pin.OUT)
         self.rst = Pin(rst, Pin.OUT)
         self.dio0 = Pin(dio0, Pin.IN)
-        self.freq = freq
+        self.chip = chip
+        # Default frequency depends on chip type
+        if freq is None:
+            if chip.lower() == "sx1278":
+                self.freq = 868_000_000
+            else:
+                self.freq = 915_000_000
+        else:
+            self.freq = freq
         self._setup()
 
     def _write(self, addr, data):
@@ -28,6 +53,7 @@ class LoRa:
 
     def _setup(self):
         self.rst.low(); time.sleep_ms(10); self.rst.high(); time.sleep_ms(10)
+        # Register map for both chips is compatible; use same init.
         self._write(0x01, bytearray([0x80]))   # PLL lock
         self._write(0x00, bytearray([0x00]))   # standby mode
         # Frequency settings
@@ -49,4 +75,3 @@ class LoRa:
         while not self.dio0.value():
             pass
         time.sleep_ms(50)
-

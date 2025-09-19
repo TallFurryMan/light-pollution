@@ -87,7 +87,8 @@ else:
     sensor = TEMT6000()
 
 spi = SPI(0, baudrate=5_000_000, sck=Pin(13), mosi=Pin(15), miso=Pin(14))
-lora = LoRa(spi, cs=18, rst=10, dio0=18)
+lora_chip = cfg.get("lora_chip", "RFM95")
+lora = LoRa(spi, cs=18, rst=10, dio0=18, chip=lora_chip)
 
 TIME_BETWEEN_READING = cfg.get("poll_interval", 900)
 
@@ -102,4 +103,3 @@ while True:
     }
     lora.send(ujson.dumps(payload).encode())
     time.sleep(TIME_BETWEEN_READING)
-

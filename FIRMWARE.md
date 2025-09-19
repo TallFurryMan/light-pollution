@@ -21,6 +21,7 @@ Copy the two Python files to the Pico’s filesystem and keep `config.json` on t
   "lon": 123.45,
   "poll_interval": 900  # optional, seconds between measurements
   "sensor_type": "TSL2591"  # optional, choose TEMT6000, TSL2591, or BH1750
+  "lora_chip": "RFM95"      # or "SX1278" for the alternative LoRa module
 }
 ```
 Run `python SETUP.PY <name> <lat> <lon>` to generate a real configuration file that the device will read on boot.
