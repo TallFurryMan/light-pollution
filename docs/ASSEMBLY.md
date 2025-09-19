@@ -1,3 +1,4 @@
+---
 # Step‑by‑Step Assembly Guide
 This guide walks you through building a **Light‑Pollution Monitor** from the parts list. All you need is a soldering iron and a small multimeter.
 
@@ -90,11 +91,11 @@ crosstalk and reduce the chance of soldering the main board.
 * Power on the Raspberry Pi Pico with a USB‑to‑serial adapter; the REPL should start.
 * Open the REPL and type `import sys; print(sys.version)` to confirm MicroPython is working.
 * Verify ADC reading:
-   ```python
-   from machine import ADC, Pin
-   adc = ADC(Pin(2))
-   print(adc.read_u16())
-   ```
+  ```python
+  from machine import ADC, Pin
+  adc = ADC(Pin(2))
+  print(adc.read_u16())
+  ```
 * Test LoRa transmission locally with the sample script (see `FIRMWARE.md`).
 
 Congratulations – the hardware is ready for code!

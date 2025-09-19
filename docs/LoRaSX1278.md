@@ -1,4 +1,6 @@
 # SX1278 LoRa Module – Assembly & Setup
+![LoRa SX1278 board](https://cdn.shopify.com/s/files/1/0208/5938/files/LoRaSX1278.jpg?width=600)
+![LoRa SX1278 board](https://cdn.shopify.com/s/files/1/0208/5938/files/LoRaSX1278.jpg?width=600)
 
 This guide shows how to wire and configure the SX1278 LoRa breakout so
 that it works with the Light‑Pollution Monitor firmware.  The SX1278
