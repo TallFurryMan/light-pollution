@@ -12,6 +12,10 @@
 | BH1750 digital lux sensor | 1 | Digital, simple I²C interface |
 | 2.5 V to 3.3 V regulator (e.g. AMS1117‑3.3) | 1 | Power sensor and sensor pin |
 | 4‑cell Li‑Po battery + charger module (MCP73831) | 1 | 4.2 V full charge |
+| Battery charger MCP73871 (USB‑to‑LiPo) | 1 | I²C status, 4‑cell Li‑Po 4.2 V | 
+| TP4056 Li‑Po charger | 1 | Simple linear charger, 4.2 V output |
+| Small solar panel 5 V 1 W | 1 | Adafruit 5 V 1W solar panel |
+| Small solar panel 5 V 2.4 W | 1 | Adafruit 5 V 2.4 W solar panel |
 | 10 µF and 100 nF capacitors | 2 | Decoupling |
 | 3.3 V level‑shifter (BSS138) | 2 | For LoRa pins if not 3.3 V only |
 | Breadboard + jumper wires | 1 | For prototyping |

@@ -118,6 +118,28 @@ to the configuration file. The updated firmware will automatically use the 868�
 2. Feed the 3.3 V output to the regulator input. Tie the regulator GND to the common rail.
 3. Verify with a multimeter: **3.3 V** at the regulator output.
 
+## 5. Optional solar power
+The kit can be powered from a small solar panel through one of two charger chips.
+
+### 5.1 Choose a charger chip
+* **MCP73871** – I²C status interface, suitable for USB‑to‑LiPo charging.
+* **TP4056** – Simple linear charger, no status lines.
+
+### 5.2 Solar panel wiring
+1. Connect the panel’s positive lead to the charger’s **VIN** input.
+2. Connect the negative lead to the charger’s **GND**.
+3. The charger outputs a regulated 4.2 V ready for the battery.
+4. The output of the charger then feeds the 3.3 V regulator the same way the
+   PCB charger does.  Keep cables short and use a 100 nF capacitor across
+   the charger output.
+5. If you use the MCP73871, you can monitor its status via I²C.
+
+### 5.3 Assembly tip
+The solar panel can be mounted on the top of the enclosure.  If the panel
+receives light, the charger will automatically begin charging the battery
+without needing any extra wiring from the Pico.  The Pico has no dedicated
+solar‐input pins, it only cares about the regulated 3.3 V rail.
+
 ## 5. Enclosure
 1. Drill a hole for the **LoRa antenna** – a simple wire or the antenna built‑in to the breakout.
 2. Mount the board so that GP2 (light sensor) is as exposed as possible; shield the rest.
