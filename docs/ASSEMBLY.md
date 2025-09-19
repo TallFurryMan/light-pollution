@@ -65,6 +65,8 @@ cut the leads later.  Keep the header pins in a separate row to avoid
 crosstalk and reduce the chance of soldering the main board.
 
 ## 3. LoRa module wiring
+
+## 3.1 RFM95 - 433MHz/945MHz LoRa module
 1. Put the **RFM95** on the board. It has a 6‑pin pitch; use the jumper wires.
 2. Wire as follows:
    * **VCC** → 3.3 V rail.
@@ -73,9 +75,43 @@ crosstalk and reduce the chance of soldering the main board.
    * **SCK** → **GP13**.
    * **MISO** → **GP14**.
    * **MOSI** → **GP15**.
-   * **RESET** → **GP10** (optional, can be tied to 3.3 V if unused).
-   * **DIO0** → **GP18** (shared with NSS) – used for IRQ.
+ * **RESET** → **GP10** (optional, can be tied to 3.3 V if unused).
+ * **DIO0** → **GP18** (shared with NSS) – used for IRQ.
 3. Add a decoupling capacitor (100 nF) across VCC‑GND near the LoRa.
+
+## 3.2 SX1278 – 868 MHz LoRa module
+If you are using an **SX1278** instead of the RFM95, the wiring is nearly the same but requires different control pins. Follow the diagram below and update the firmware configuration accordingly.
+
+```markdown
+![SX1278 LoRa board](https://cdn.shopify.com/s/files/1/0208/5938/files/LoRaSX1278.jpg?width=600)
+```
+
+**Connection table**
+```
+Pico (3.3 V)
+│   ──> 3.3 V regulator
+│
+├─ VCC            ──> 3.3 V
+├─ GND            ──> GND
+├─ SPI0 SCK       ──> GP13
+├─ SPI0 MOSI      ──> GP15
+├─ SPI0 MISO      ──> GP14
+├─ NSS (CS)       ──> GP17
+├─ DIO0 (IRQ)     ──> GP16
+└─ RESET           ──> GP18
+```
+
+* **Keep the SPI traces short** – the SX1278 runs at 3 MHz and is sensitive to long wires on the MOSI/MISO lines.
+* **Decouple** the VCC pin with a 100 nF capacitor across VCC‑GND near the module.
+
+### Firmware configuration
+The firmware reads the `lora_chip` key in `config.json` to pick the correct chip. Add
+
+```json
+{ "lora_chip": "SX1278", … }
+```
+
+to the configuration file. The updated firmware will automatically use the 868 MHz frequency and register defaults for the SX1278.
 
 ## 4. Power supply
 1. Connect the **Li‑Po charger** to the battery. Use a 4‑cell pack (4.2 V). The charger will output 3.3 V.
