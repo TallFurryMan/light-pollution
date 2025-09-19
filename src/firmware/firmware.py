@@ -120,7 +120,7 @@ class TP4056(BaseCharger):
         return "charging"
 
 if charger_type == "MCP73871":
-    charger_i2c = I2C(1, scl=Pin(5), sda=Pin(4))
+    charger_i2c = I2C(1)
     charger = MCP73871(charger_i2c)
 elif charger_type == "TP4056":
     charger = TP4056()
