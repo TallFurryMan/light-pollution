@@ -13,10 +13,12 @@ class FakePin:
     OUT = 1
     IN = 0
 
-    def __init__(self, pin_no, mode=None):
+    def __init__(self, pin_no, mode=None, initial=True):
+        if isinstance(pin_no, FakePin):
+            initial = pin_no._value
         self.pin_no = pin_no
         self.mode = mode
-        self._value = True
+        self._value = initial
 
     def low(self):
         self._value = False
@@ -24,7 +26,9 @@ class FakePin:
     def high(self):
         self._value = True
 
-    def value(self):
+    def value(self, val=None):
+        if val is not None:
+            self._value = bool(val)
         return self._value
 
 
@@ -76,6 +80,25 @@ class LoRaTests(unittest.TestCase):
         self.assertIn(b"\xa2\x02", written)
         self.assertIn(b"\x81\x83", written)
         self.assertIn(b"\x92\xff", written)
+
+    def test_sx1262_command_sequence(self):
+        spi = FakeSPI()
+        # busy low, dio1 high to avoid blocking
+        lorawan.SX1262LoRa(
+            spi=spi,
+            cs=5,
+            busy=FakePin(6, initial=False),
+            rst=7,
+            dio1=FakePin(8, initial=True),
+        )
+        # Expect opcodes for standby, regulator, freq, modulation, packet params, buffer base
+        opcodes = [w[0] for w in spi.writes if w]
+        self.assertIn(0x80, opcodes)
+        self.assertIn(0x96, opcodes)
+        self.assertIn(0x86, opcodes)
+        self.assertIn(0x8B, opcodes)
+        self.assertIn(0x8C, opcodes)
+        self.assertIn(0x8F, opcodes)
 
 
 if __name__ == "__main__":

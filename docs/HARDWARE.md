@@ -7,6 +7,7 @@
 | Raspberry Pi Pico | 1 | Main microcontroller |
 | RFM95W LoRa breakout (433 MHz or 915 MHz) | 1 | 8‑bit SPI interface, 4‑pin header |
 | SX1278 LoRa breakout (868 MHz) | 1 | 8‑bit SPI interface, 4‑pin header |
+| Waveshare SX1262 868 MHz Pico HAT | 1 | Preferred Pico LoRa HAT (SX1262) |
 | TEMT6000 light sensor (photodiode) | 1 | Analog output, low‑cost |
 | TSL2591 high‑sensitivity I²C lux meter | 1 | Digital, low‑light performance |
 | BH1750 digital lux sensor | 1 | Digital, simple I²C interface |
@@ -23,12 +24,13 @@
 | Optional: 3‑pin connector for future GPS module |
 
 ### Gateway Hardware (Home Assistant / Raspberry Pi)
-Use a LoRa concentrator that runs the Semtech packet forwarder and works over USB so it can coexist with a Waveshare RS485/CAN HAT on the Pico sensor unit:
-- **RAK7271 / RAK7371 (SX1302/SX1303 USB stick)** – available in EU868/US915; known‑good with `sx1302_hal`.
+Use a LoRa concentrator that runs the Semtech packet forwarder; suggested options:
+- **Waveshare SX1303 LoRaWAN HAT for Raspberry Pi** – SX1303 concentrator, SPI; supported by Semtech UDP forwarder/ChirpStack.
+- **RAK7271 / RAK7371 (SX1302/SX1303 USB stick)** – EU868/US915; known‑good with `sx1302_hal`.
 - **Seeed WM1302 on USB carrier** – SX1302, EU868/US915 variants.
 - **iC880A-SPI on USB/SPI bridge** – legacy SX1301 but widely supported.
 
-These connect to the Home Assistant Raspberry Pi and feed ChirpStack or the gateway bridge in the compose stack below.
+These connect to the Home Assistant Raspberry Pi and feed ChirpStack or the gateway bridge in the compose stack. Pico sensor units should use the SX1262 HAT (or an ESP-based SX1262 module for a future variant) and do not translate LoRa to RS485/CAN.
 
 ## 2. Wiring Diagram
 ```

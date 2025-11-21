@@ -8,9 +8,7 @@ except ImportError:  # Allows importing in CPython tests
     Pin = SPI = None  # type: ignore
 
 class LoRa:
-    """Very small LoRa helper that talks to an LoRa module.
-    Supports the *RFM95* (default) and the *SX1278* as an alternative
-    hardware variant.
+    """Very small LoRa helper for SX127x modules (RFM95/SX1278).
 
     Parameters
     ----------
@@ -96,3 +94,71 @@ class LoRa:
             _sleep_ms(1)
         self._write(0x12, bytearray([0xFF]))  # Clear IRQs
         _sleep_ms(10)
+
+
+class SX1262LoRa:
+    """Minimal SX1262 helper for Waveshare SX1262 868 MHz HATs."""
+
+    def __init__(self, spi, cs, busy, rst, dio1, freq=868_000_000, power=14):
+        if Pin is None or (spi is None and SPI is None):
+            raise RuntimeError("SX1262 requires machine.Pin and machine.SPI")
+        self.spi = spi
+        self.cs = Pin(cs, Pin.OUT)
+        self.busy = Pin(busy, Pin.IN)
+        self.rst = Pin(rst, Pin.OUT)
+        self.dio1 = Pin(dio1, Pin.IN)
+        self.freq = freq
+        self.power = power
+        self._reset()
+        self._configure()
+
+    def _wait_busy(self):
+        while self.busy.value():
+            _sleep_ms(1)
+
+    def _reset(self):
+        self.rst.value(0); _sleep_ms(10); self.rst.value(1); _sleep_ms(10)
+
+    def _write_cmd(self, opcode, params=b""):
+        self._wait_busy()
+        self.cs.value(0)
+        self.spi.write(bytearray([opcode]))
+        if params:
+            self.spi.write(params)
+        self.cs.value(1)
+        self._wait_busy()
+
+    def _set_rf_frequency(self, freq):
+        # Convert Hz to SX1262 freq steps (32e6 / 2^25)
+        step = int(freq / 953.67431640625)
+        self._write_cmd(0x86, bytearray([
+            (step >> 24) & 0xFF,
+            (step >> 16) & 0xFF,
+            (step >> 8) & 0xFF,
+            step & 0xFF,
+        ]))
+
+    def _configure(self):
+        self._write_cmd(0x80, b"\x00")  # Standby RC
+        self._write_cmd(0x96, b"\x00")  # LDO regulator
+        self._set_rf_frequency(self.freq)
+        # Modulation params: SF7 BW125 CR4/5 LDRO off
+        self._write_cmd(0x8B, b"\x07\x04\x01\x00")
+        # Packet params: preamble len 8, explicit header, CRC on, IQ standard
+        self._write_cmd(0x8C, b"\x00\x08\x00\x00\x01\x00\x00")
+        # Buffer bases (TX=0, RX=0)
+        self._write_cmd(0x8F, b"\x00\x00")
+
+    def send(self, payload):
+        if len(payload) > 255:
+            raise ValueError("payload too large")
+        # Write payload to buffer at offset 0
+        self._write_cmd(0x0E, b"\x00" + bytes(payload))
+        # Update packet length (leave other params)
+        self._write_cmd(0x8C, b"\x00\x08\x00" + bytes([len(payload)]) + b"\x01\x00\x00")
+        # Set TX params (power, ramp)
+        self._write_cmd(0x8E, bytes([self.power, 0x04]))
+        # SetTx with timeout = 0 (single shot)
+        self._write_cmd(0x83, b"\x00\x00\x00")
+        while not self.dio1.value():
+            _sleep_ms(1)

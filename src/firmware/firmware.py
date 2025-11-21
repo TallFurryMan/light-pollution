@@ -23,6 +23,11 @@ DEFAULT_CONFIG = {
     "charger_type": "none",
     "poll_interval": 900,
     "lora_chip": "RFM95",
+    "lora_cs": 18,
+    "lora_rst": 10,
+    "lora_dio0": 18,
+    "lora_busy": 16,
+    "lora_dio1": 17,
 }
 
 _sleep_ms = getattr(time, "sleep_ms", lambda ms: time.sleep(ms / 1000))
@@ -140,7 +145,15 @@ def make_lora(cfg, spi=None, pin_cls=Pin, lora_cls=LoRa):
         raise RuntimeError("LoRa requires machine.SPI and machine.Pin")
     spi = spi or SPI(0, baudrate=5_000_000, sck=pin_cls(13), mosi=pin_cls(15), miso=pin_cls(14))
     lora_chip = cfg.get("lora_chip", DEFAULT_CONFIG["lora_chip"])
-    return lora_cls(spi, cs=18, rst=10, dio0=18, chip=lora_chip)
+    cs = cfg.get("lora_cs", DEFAULT_CONFIG["lora_cs"])
+    rst = cfg.get("lora_rst", DEFAULT_CONFIG["lora_rst"])
+    dio0 = cfg.get("lora_dio0", DEFAULT_CONFIG["lora_dio0"])
+    if lora_chip.upper() == "SX1262":
+        from lorawan import SX1262LoRa  # late import to avoid optional dep when not used
+        busy = cfg.get("lora_busy", DEFAULT_CONFIG["lora_busy"])
+        dio1 = cfg.get("lora_dio1", DEFAULT_CONFIG["lora_dio1"])
+        return SX1262LoRa(spi, cs=cs, busy=busy, rst=rst, dio1=dio1, freq=cfg.get("freq", 868_000_000))
+    return lora_cls(spi, cs=cs, rst=rst, dio0=dio0, chip=lora_chip, freq=cfg.get("freq"))
 
 
 def make_payload(cfg, lux, charger, now_fn=None):
