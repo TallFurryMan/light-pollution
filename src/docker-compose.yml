@@ -24,6 +24,68 @@ services:
       - backend
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+  chirpstack:
+    image: chirpstack/chirpstack:4
+    container_name: chirpstack
+    restart: unless-stopped
+    environment:
+      CHIRPSTACK_REGION: EU868
+    depends_on:
+      - mqtt
+      - postgres
+      - redis
+    ports:
+      - "8087:8080"
+    networks:
+      - backend
+    volumes:
+      - ./chirpstack/chirpstack.toml:/etc/chirpstack/chirpstack.toml
+  redis:
+    image: redis:7-alpine
+    container_name: chirpstack_redis
+    restart: unless-stopped
+    networks:
+      - backend
+  postgres:
+    image: postgres:15
+    container_name: chirpstack_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: chirpstack
+      POSTGRES_USER: chirpstack
+      POSTGRES_DB: chirpstack
+    networks:
+      - backend
+    volumes:
+      - chirpstack-pgdata:/var/lib/postgresql/data
+  chirpstack-gateway-bridge:
+    image: chirpstack/chirpstack-gateway-bridge:4
+    container_name: gateway_bridge
+    restart: unless-stopped
+    depends_on:
+      - mqtt
+    networks:
+      - backend
+    environment:
+      # Forward Semtech UDP packets to MQTT
+      INTEGRATION__MQTT__EVENT_TOPIC_TEMPLATE: "gateway/{{ gateway_id }}/event/{{ event }}"
+      INTEGRATION__MQTT__COMMAND_TOPIC_TEMPLATE: "gateway/{{ gateway_id }}/command/{{ command }}"
+      INTEGRATION__MQTT__SERVER: "tcp://mosquitto:1883"
+    ports:
+      - "1700:1700/udp"
+  chirpstack-mock:
+    image: eclipse-mosquitto:2.0
+    container_name: chirpstack_mock
+    command: >
+      sh -c "apk add --no-cache mosquitto-clients &&
+             while true; do
+               mosquitto_pub -h mqtt -t application/1/device/mock01/event/up -m '{\"lux\":123,\"name\":\"mock\",\"lat\":0,\"lon\":0,\"ts\":'$$(date +%s)'}';
+               sleep 15;
+             done"
+    depends_on:
+      - mqtt
+    networks:
+      - backend
   lora_gateway:
     # The original image `ghcr.io/lorawan/lora-gateway-docker:latest`
     # is no longer maintained.  We switch to the actively
@@ -60,6 +122,7 @@ services:
 
 volumes:
   influx-data:
+  chirpstack-pgdata:
 
 networks:
   backend:

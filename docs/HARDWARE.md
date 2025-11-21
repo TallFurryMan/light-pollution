@@ -22,6 +22,14 @@
 | Enclosure (3‑D printed) | 1 | Waterproof, small footprint |
 | Optional: 3‑pin connector for future GPS module |
 
+### Gateway Hardware (Home Assistant / Raspberry Pi)
+Use a LoRa concentrator that runs the Semtech packet forwarder and works over USB so it can coexist with a Waveshare RS485/CAN HAT on the Pico sensor unit:
+- **RAK7271 / RAK7371 (SX1302/SX1303 USB stick)** – available in EU868/US915; known‑good with `sx1302_hal`.
+- **Seeed WM1302 on USB carrier** – SX1302, EU868/US915 variants.
+- **iC880A-SPI on USB/SPI bridge** – legacy SX1301 but widely supported.
+
+These connect to the Home Assistant Raspberry Pi and feed ChirpStack or the gateway bridge in the compose stack below.
+
 ## 2. Wiring Diagram
 ```
 Pico (3.3 V) ──> 3.3 V regulator ──> RFM95 (VCC)
