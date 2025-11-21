@@ -20,11 +20,11 @@ instead of the 24‑hour retention Home Assistant uses by default.
 1. Copy or create the `config` directory next to the compose file.
 2. Add any custom Home Assistant integration config you want.
 3. Start the stack: `docker compose -f src/docker-compose.yml up -d`.
-   The InfluxDB container will expose port `8086` for the HA integration.
-4. In the HA UI, go to **Configuration → Integrations** and add
-   an *InfluxDB* integration pointing at `http://influxdb:8086`.
-5. All incoming sensor data will be written to the `homeassistant`
-   bucket.
+   InfluxDB exposes port `8086` and is pre-wired in `src/configuration.yaml`
+   via the `influxdb2` integration (no UI configuration needed).
+4. Open Home Assistant at `http://localhost:8123` and complete the
+   onboarding. The InfluxDB integration will be active automatically,
+   writing to the `homeassistant` bucket on `influxdb:8086`.
 
 The configuration file is designed to work out‑of‑the‑box with the
 included `src/configuration.yaml`.
