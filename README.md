@@ -1,5 +1,8 @@
 ## Server‑Side Setup
 
+[![Stack Tests](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/stack-tests.yml/badge.svg)](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/stack-tests.yml)
+[![Latest Release](https://img.shields.io/github/v/release/tallfurryman/lora-to-mqtt?include_prereleases&label=latest%20release)](https://github.com/tallfurryman/lora-to-mqtt/releases)
+
 The repository includes a `docker-compose.yml` that runs Home Assistant,
 Mosquitto MQTT, the LoRa gateway and an **InfluxDB** instance.  The
 InfluxDB service stores every measurement that Home Assistant pushes

@@ -1,0 +1,34 @@
+name: Stack Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bring up stack
+        run: docker compose -f src/docker-compose.yml up -d
+
+      - name: Wait for services
+        run: |
+          for i in {1..60}; do
+            if curl -sf http://localhost:8123 && curl -sf http://localhost:8086/health; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Services did not become ready" >&2
+          exit 1
+
+      - name: Run tests in test_runner
+        run: docker compose -f src/docker-compose.yml run --rm test_runner python -m unittest discover -s tests
+
+      - name: Teardown
+        if: always()
+        run: docker compose -f src/docker-compose.yml down -v
