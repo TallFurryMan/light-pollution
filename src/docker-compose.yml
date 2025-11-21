@@ -29,6 +29,9 @@ services:
     restart: unless-stopped
     environment:
       CHIRPSTACK_REGION: EU868
+    command:
+      - "--config"
+      - "/etc/chirpstack"
     depends_on:
       - mqtt
       - postgres
@@ -38,7 +41,7 @@ services:
     networks:
       - backend
     volumes:
-      - ./chirpstack/chirpstack.toml:/etc/chirpstack/chirpstack.toml
+      - ./chirpstack:/etc/chirpstack
   redis:
     image: redis:7-alpine
     container_name: chirpstack_redis
@@ -67,10 +70,9 @@ services:
     networks:
       - backend
     environment:
-      # Forward Semtech UDP packets to MQTT
-      INTEGRATION__MQTT__EVENT_TOPIC_TEMPLATE: "gateway/{{ gateway_id }}/event/{{ event }}"
-      INTEGRATION__MQTT__COMMAND_TOPIC_TEMPLATE: "gateway/{{ gateway_id }}/command/{{ command }}"
       INTEGRATION__MQTT__SERVER: "tcp://mosquitto:1883"
+      INTEGRATION__MQTT__EVENT_TOPIC_TEMPLATE: "gateway/{{.GatewayID}}/event/{{.EventType}}"
+      INTEGRATION__MQTT__COMMAND_TOPIC_TEMPLATE: "gateway/{{.GatewayID}}/command/#"
     ports:
       - "1700:1700/udp"
   chirpstack-mock:
