@@ -88,6 +88,15 @@ services:
       - mqtt
     networks:
       - backend
+  test_runner:
+    image: python:3.10-slim
+    container_name: test_runner
+    command: ["sleep", "infinity"]
+    working_dir: /workspace
+    networks:
+      - backend
+    volumes:
+      - ..:/workspace
   influxdb:
     image: influxdb:2.7
     container_name: influxdb

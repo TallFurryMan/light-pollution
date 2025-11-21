@@ -37,3 +37,16 @@ onboarding will prompt for a user; complete that and then add the
 InfluxDB integration pointing at `http://influxdb:8086`. Mosquitto is
 exposed on `tcp://localhost:1883` for local testing and ChirpStack’s UI
 is available on `http://localhost:8087`.
+
+### Running tests inside the stack
+
+An optional `test_runner` container (Python 3.10) is included. To run
+the tests against the live stack:
+
+```bash
+docker compose -f src/docker-compose.yml up -d
+docker compose -f src/docker-compose.yml run --rm test_runner python -m unittest discover -s tests
+```
+
+The repository is mounted at `/workspace` inside the test container so
+artifacts and results are available on the host.
