@@ -29,3 +29,11 @@ instead of the 24‑hour retention Home Assistant uses by default.
 The configuration file is designed to work out‑of‑the‑box with the
 included `src/configuration.yaml`.
 
+### Accessing Home Assistant
+
+After the stack is up, open `http://localhost:8123` in your browser (or
+the host IP if running on another machine). The initial Home Assistant
+onboarding will prompt for a user; complete that and then add the
+InfluxDB integration pointing at `http://influxdb:8086`. Mosquitto is
+exposed on `tcp://localhost:1883` for local testing and ChirpStack’s UI
+is available on `http://localhost:8087`.
