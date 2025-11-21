@@ -14,8 +14,7 @@ homeassistant:
 # InfluxDB integration (assuming the container name is 'influxdb')
 influxdb2:
   url: http://influxdb:8086
-  token: ""
+  token: "ha-dev-token"
   organization: "homeassistant"
   bucket: "homeassistant"
   auth_type: "none"
-

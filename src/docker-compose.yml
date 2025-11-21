@@ -91,10 +91,12 @@ services:
     container_name: influxdb
     restart: unless-stopped
     environment:
-      INFLUXDB_DB: homeassistant
-      INFLUXDB_ADMIN_USER: admin
-      INFLUXDB_ADMIN_PASSWORD: adminpw
-      INFLUXDB_HTTP_AUTH_MODE: disabled
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: adminpw
+      DOCKER_INFLUXDB_INIT_ORG: homeassistant
+      DOCKER_INFLUXDB_INIT_BUCKET: homeassistant
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ha-dev-token
     ports:
       - "8086:8086"
     networks:
