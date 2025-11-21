@@ -1,35 +1,31 @@
-Light‑Pollution Monitor Project
-===============================
+## Server‑Side Setup
 
-The **Light‑Pollution Monitor** is a hands‑on learning kit that turns a
-Raspberry Pi Pico into a tiny data‑collection node.  Students assemble the
-hardware, write or copy the firmware, give each unit a name and location and
-watch the data appear on a Home Assistant map.
+The repository includes a `docker-compose.yml` that runs Home Assistant,
+Mosquitto MQTT, the LoRa gateway and an **InfluxDB** instance.  The
+InfluxDB service stores every measurement that Home Assistant pushes
+via the `influxdb2` integration, so you get unlimited‑sized history
+instead of the 24‑hour retention Home Assistant uses by default.
 
-This repository contains:
+### File layout
 
-* **Presentation** – overview and success criteria (`docs/PRESENTATION.md`).
-* **Architecture** – system architecture diagram and data flow (`docs/ARCHITECTURE.md`).
-* **Kids** – classroom‑ready guide (`docs/KIDS.md`).
-* **Assembly** – detailed wiring and build instructions (`docs/ASSEMBLY.md`).
-* **Hardware** – bill of materials and layout guidance (`docs/HARDWARE.md`).
-* **Firmware** – MicroPython source (`src/firmware/`).
+| File | Purpose |
+|------|---------|
+| `src/docker-compose.yml` | Pulls the four services.
+| `src/configuration.yaml` | Minimal Home Assistant config with InfluxDB integration.
+| `src/config` | Folder mapping for Home Assistant's data.  Add your custom
+  config files here.
 
-## Quick start
-```bash
-# 1. Flash the firmware onto a Pico
-rshell -p /dev/ttyUSB0 -e "mkdir firmware && cp src/firmware/*.py firmware/"
-# 2. Configure the unit
-python SETUP.PY unit‑1 43.58 1.23
-# 3. Attach the hardware and power it on.
-```
+### What you need to do
 
-## Documentation
-All Markdown documentation lives in the **docs** directory.  For a
-full‑page view you can run the lightweight web server below.
+1. Copy or create the `config` directory next to the compose file.
+2. Add any custom Home Assistant integration config you want.
+3. Start the stack: `docker compose -f src/docker-compose.yml up -d`.
+   The InfluxDB container will expose port `8086` for the HA integration.
+4. In the HA UI, go to **Configuration → Integrations** and add
+   an *InfluxDB* integration pointing at `http://influxdb:8086`.
+5. All incoming sensor data will be written to the `homeassistant`
+   bucket.
 
-```bash
-python serve_docs.py
-```
+The configuration file is designed to work out‑of‑the‑box with the
+included `src/configuration.yaml`.
 
-Open `http://localhost:8000` in a browser.
