@@ -86,24 +86,6 @@ services:
       - mqtt
     networks:
       - backend
-  lora_gateway:
-    # The original image `ghcr.io/lorawan/lora-gateway-docker:latest`
-    # is no longer maintained.  We switch to the actively
-    # supported `ghcr.io/lorawan/lora-gateway:1.2` image which
-    # contains the same binaries and configuration layout.
-    image: ghcr.io/lorawan/lora-gateway:1.2
-    container_name: lora_gateway
-    restart: unless-stopped
-    environment:
-      - MQTT_URL=tcp://mosquitto:1883
-      - MQTT_USER=homeassistant
-      - MQTT_PASSWORD=secret
-    networks:
-      - backend
-    depends_on:
-      - mqtt
-    volumes:
-      - ./lora:/etc/lora
   influxdb:
     image: influxdb:2.7
     container_name: influxdb
