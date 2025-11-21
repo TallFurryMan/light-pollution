@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
@@ -58,6 +57,7 @@ services:
       - backend
     volumes:
       - chirpstack-pgdata:/var/lib/postgresql/data
+      - ./chirpstack/init_pg.sql:/docker-entrypoint-initdb.d/init_pg.sql
   chirpstack-gateway-bridge:
     image: chirpstack/chirpstack-gateway-bridge:4
     container_name: gateway_bridge

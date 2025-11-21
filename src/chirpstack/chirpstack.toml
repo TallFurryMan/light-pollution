@@ -6,7 +6,7 @@ dsn="postgres://chirpstack:chirpstack@postgres/chirpstack?sslmode=disable"
 automigrate=true
 
 [redis]
-servers=["redis:6379"]
+servers=["redis://redis:6379"]
 
 [network]
 enabled=true
@@ -18,5 +18,6 @@ bind="0.0.0.0:8080"
 [integration.mqtt]
 enabled=true
 server="tcp://mosquitto:1883"
+# ChirpStack v4 uses nested templates; these mirror defaults.
 event_topic="application/{{application_id}}/device/{{dev_eui}}/event/{{event}}"
 command_topic="application/{{application_id}}/device/{{dev_eui}}/command/{{command}}"
