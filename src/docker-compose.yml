@@ -4,7 +4,13 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: ha
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - "8123:8123"
+    networks:
+      - backend
+    depends_on:
+      - mqtt
+      - influxdb
     volumes:
       - ./config:/config
       - ./configuration.yaml:/config/configuration.yaml
@@ -14,6 +20,8 @@ services:
     restart: unless-stopped
     ports:
       - "1883:1883"
+    networks:
+      - backend
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
   lora_gateway:
@@ -28,6 +36,10 @@ services:
       - MQTT_URL=tcp://mosquitto:1883
       - MQTT_USER=homeassistant
       - MQTT_PASSWORD=secret
+    networks:
+      - backend
+    depends_on:
+      - mqtt
     volumes:
       - ./lora:/etc/lora
   influxdb:
@@ -41,8 +53,13 @@ services:
       INFLUXDB_HTTP_AUTH_MODE: disabled
     ports:
       - "8086:8086"
+    networks:
+      - backend
     volumes:
       - influx-data:/var/lib/influxdb2
 
 volumes:
   influx-data:
+
+networks:
+  backend:
