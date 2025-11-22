@@ -33,8 +33,11 @@ def post_json(url, payload, headers=None):
     req = urllib.request.Request(
         url, data=data, headers=headers or {"Content-Type": "application/json"}
     )
-    with urllib.request.urlopen(req, timeout=5) as resp:
-        return json.loads(resp.read().decode())
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return json.loads(resp.read().decode())
+    except urllib.error.HTTPError as e:
+        return {"error": e.code}
 
 
 def onboard(base):
@@ -47,7 +50,7 @@ def onboard(base):
     if not proceed:
         return
     # Step 1: create user
-    post_json(
+    resp = post_json(
         base + "/api/onboarding/users",
         {
             "client_id": base,
@@ -57,8 +60,10 @@ def onboard(base):
             "password": "adminpw123",
         },
     )
+    if isinstance(resp, dict) and resp.get("error") in (401, 403):
+        return
     # Step 2: core config
-    post_json(
+    resp = post_json(
         base + "/api/onboarding/core_config",
         {
             "location": {
@@ -73,11 +78,15 @@ def onboard(base):
             },
         },
     )
+    if isinstance(resp, dict) and resp.get("error") in (401, 403):
+        return
     # Step 3: analytics
-    post_json(
+    resp = post_json(
         base + "/api/onboarding/analytics",
         {"analytics": False},
     )
+    if isinstance(resp, dict) and resp.get("error") in (401, 403):
+        return
 
 
 def main():
