@@ -26,6 +26,9 @@ jobs:
           echo "Services did not become ready" >&2
           exit 1
 
+      - name: Onboard Home Assistant for tests
+        run: docker compose -f src/docker-compose.yml run --rm test_runner python tests/ha_onboard.py
+
       - name: Run tests in test_runner
         run: docker compose -f src/docker-compose.yml run --rm test_runner python -m unittest discover -s tests
 

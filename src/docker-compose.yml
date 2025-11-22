@@ -11,7 +11,7 @@ services:
       - mqtt
       - influxdb
     volumes:
-      - ./config:/config
+      - ha-config:/config
       - ./configuration.yaml:/config/configuration.yaml
   mqtt:
     image: eclipse-mosquitto:2.0
@@ -130,6 +130,7 @@ services:
 volumes:
   influx-data:
   chirpstack-pgdata:
+  ha-config:
 
 networks:
   backend:
