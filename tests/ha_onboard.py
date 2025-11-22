@@ -28,10 +28,10 @@ def get_json(url):
         return json.loads(resp.read().decode())
 
 
-def post_json(url, payload):
+def post_json(url, payload, headers=None):
     data = json.dumps(payload).encode()
     req = urllib.request.Request(
-        url, data=data, headers={"Content-Type": "application/json"}
+        url, data=data, headers=headers or {"Content-Type": "application/json"}
     )
     with urllib.request.urlopen(req, timeout=5) as resp:
         return json.loads(resp.read().decode())
@@ -46,47 +46,38 @@ def onboard(base):
         proceed = any(not item.get("done", False) for item in status if isinstance(item, dict))
     if not proceed:
         return
-    # Create user
-    try:
-        post_json(
-            base + "/api/onboarding/users",
-            {
-                "client_id": base,
+    # Step 1: create user
+    post_json(
+        base + "/api/onboarding/users",
+        {
+            "client_id": base,
+            "language": "en",
+            "name": "Admin",
+            "username": "admin",
+            "password": "adminpw123",
+        },
+    )
+    # Step 2: core config
+    post_json(
+        base + "/api/onboarding/core_config",
+        {
+            "location": {
+                "latitude": 48.2167,
+                "longitude": -1.6986,
+                "elevation": 60,
+                "unit_system": "metric",
+                "currency": "EUR",
                 "language": "en",
-                "name": "Admin",
-                "username": "admin",
-                "password": "adminpw123",
+                "time_zone": "Europe/Paris",
+                "country": "FR",
             },
-        )
-    except urllib.error.HTTPError:
-        pass
-    # Core config
-    try:
-        post_json(
-            base + "/api/onboarding/core_config",
-            {
-                "location": {
-                    "latitude": 48.2167,
-                    "longitude": -1.6986,
-                    "elevation": 60,
-                    "unit_system": "metric",
-                    "currency": "EUR",
-                    "language": "en",
-                    "time_zone": "Europe/Paris",
-                    "country": "FR",
-                },
-            },
-        )
-    except urllib.error.HTTPError:
-        pass
-    # Analytics opt-out
-    try:
-        post_json(
-            base + "/api/onboarding/analytics",
-            {"analytics": False},
-        )
-    except urllib.error.HTTPError:
-        pass
+        },
+    )
+    # Step 3: analytics
+    post_json(
+        base + "/api/onboarding/analytics",
+        {"analytics": False},
+    )
 
 
 def main():
