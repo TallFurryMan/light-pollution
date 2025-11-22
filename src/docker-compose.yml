@@ -22,7 +22,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t '$SYS/#' -C 1 -W 3 >/dev/null"]
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t '$$SYS/#' -C 1 -W 3 >/dev/null"]
       interval: 15s
       timeout: 5s
       retries: 5
