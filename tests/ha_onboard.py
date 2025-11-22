@@ -1,6 +1,8 @@
 import json
+import sys
 import urllib.request
 import urllib.error
+import urllib.parse
 import time
 
 HA_ENDPOINTS = [
@@ -48,7 +50,7 @@ def onboard(base):
     elif isinstance(status, list):
         proceed = any(not item.get("done", False) for item in status if isinstance(item, dict))
     if not proceed:
-        return
+        return True
     # Step 1: create user
     resp = post_json(
         base + "/api/onboarding/users",
@@ -60,8 +62,8 @@ def onboard(base):
             "password": "adminpw123",
         },
     )
-    if isinstance(resp, dict) and resp.get("error") in (401, 403):
-        return
+    if isinstance(resp, dict) and resp.get("error"):
+        raise RuntimeError(f"User creation failed: {resp}")
     # Step 2: core config
     resp = post_json(
         base + "/api/onboarding/core_config",
@@ -78,27 +80,54 @@ def onboard(base):
             },
         },
     )
-    if isinstance(resp, dict) and resp.get("error") in (401, 403):
-        return
+    if isinstance(resp, dict) and resp.get("error"):
+        raise RuntimeError(f"Core config failed: {resp}")
     # Step 3: analytics
     resp = post_json(
         base + "/api/onboarding/analytics",
         {"analytics": False},
     )
-    if isinstance(resp, dict) and resp.get("error") in (401, 403):
-        return
+    if isinstance(resp, dict) and resp.get("error"):
+        raise RuntimeError(f"Analytics step failed: {resp}")
+    return True
+
+
+def try_login(base):
+    data = urllib.parse.urlencode(
+        {
+            "grant_type": "password",
+            "username": "admin",
+            "password": "adminpw123",
+            "client_id": base,
+        }
+    ).encode()
+    req = urllib.request.Request(
+        base + "/auth/token",
+        data=data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return resp.getcode() == 200
+    except Exception:
+        return False
 
 
 def main():
     base = None
-    for _ in range(30):
+    for idx in range(30):
         base = first_base()
         if base:
             break
         time.sleep(2)
+        if idx == 0:
+            print("Home Assistant not reachable yet, waiting for startup...", file=sys.stderr)
     if not base:
         raise SystemExit("Home Assistant not reachable for onboarding")
-    onboard(base)
+    if try_login(base):
+        return
+    if not onboard(base):
+        raise SystemExit("Onboarding did not complete")
 
 
 if __name__ == "__main__":
