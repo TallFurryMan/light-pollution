@@ -27,10 +27,10 @@ jobs:
           exit 1
 
       - name: Onboard Home Assistant for tests
-        run: docker compose -f src/docker-compose.yml run --rm test_runner python tests/ha_onboard.py
+        run: docker compose -f src/docker-compose.yml run --rm test_runner sh -c "pip install -q -r tests/requirements.txt && python tests/ha_onboard.py"
 
       - name: Run tests in test_runner
-        run: docker compose -f src/docker-compose.yml run --rm test_runner python -m unittest discover -s tests
+        run: docker compose -f src/docker-compose.yml run --rm test_runner sh -c "pip install -q -r tests/requirements.txt && python -m unittest discover -s tests"
 
       - name: Teardown
         if: always()

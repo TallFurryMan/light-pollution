@@ -85,10 +85,16 @@ services:
     image: eclipse-mosquitto:2.0
     container_name: chirpstack_mock
     command: >
-      sh -c "apk add --no-cache mosquitto-clients &&
-             while true; do
-               mosquitto_pub -h mqtt -t application/1/device/mock01/event/up -m '{\"lux\":123,\"name\":\"mock\",\"lat\":0,\"lon\":0,\"ts\":'$$(date +%s)'}';
-               sleep 15;
+      sh -c "apk add --no-cache mosquitto-clients && \
+             mosquitto_pub -h mqtt -r -t homeassistant/device_tracker/melesse1/config -m '{\"name\":\"Melesse Tracker 1\",\"uniq_id\":\"melesse1\",\"device\":{\"identifiers\":[\"melesse1\"],\"name\":\"Melesse Tracker 1\"},\"json_attributes_topic\":\"melesse/trackers/melesse1\",\"state_topic\":\"melesse/trackers/melesse1\",\"payload_home\":\"home\",\"payload_not_home\":\"not_home\",\"source_type\":\"gps\",\"latitude\":\"latitude\",\"longitude\":\"longitude\"}' && \
+             mosquitto_pub -h mqtt -r -t homeassistant/device_tracker/melesse2/config -m '{\"name\":\"Melesse Tracker 2\",\"uniq_id\":\"melesse2\",\"device\":{\"identifiers\":[\"melesse2\"],\"name\":\"Melesse Tracker 2\"},\"json_attributes_topic\":\"melesse/trackers/melesse2\",\"state_topic\":\"melesse/trackers/melesse2\",\"payload_home\":\"home\",\"payload_not_home\":\"not_home\",\"source_type\":\"gps\",\"latitude\":\"latitude\",\"longitude\":\"longitude\"}' && \
+             mosquitto_pub -h mqtt -r -t homeassistant/sensor/melesse_lux/config -m '{\"name\":\"Melesse Lux\",\"uniq_id\":\"melesse_lux\",\"device\":{\"identifiers\":[\"melesse_lux\"],\"name\":\"Melesse Lux\"},\"state_topic\":\"melesse/sensors/lux\",\"unit_of_measurement\":\"lx\",\"device_class\":\"illuminance\"}' && \
+             while true; do \
+               ts=$$(date +%s); \
+               mosquitto_pub -h mqtt -r -t melesse/trackers/melesse1 -m '{\"state\":\"home\",\"latitude\":48.2167,\"longitude\":-1.6986,\"ts\":'$${ts}'}'; \
+               mosquitto_pub -h mqtt -r -t melesse/trackers/melesse2 -m '{\"state\":\"home\",\"latitude\":48.2180,\"longitude\":-1.7000,\"ts\":'$${ts}'}'; \
+               mosquitto_pub -h mqtt -r -t melesse/sensors/lux -m '{\"lux\":123,\"ts\":'$${ts}'}'; \
+               sleep 15; \
              done"
     depends_on:
       - mqtt

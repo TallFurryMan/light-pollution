@@ -1,6 +1,7 @@
 import json
 import urllib.request
 import urllib.error
+import time
 
 HA_ENDPOINTS = [
     "http://ha:8123",
@@ -12,8 +13,11 @@ HA_ENDPOINTS = [
 def first_base():
     for base in HA_ENDPOINTS:
         try:
-            with urllib.request.urlopen(base + "/api/", timeout=3):
-                return base
+            urllib.request.urlopen(base + "/api/", timeout=3)
+            return base
+        except urllib.error.HTTPError:
+            # Any HTTP response means the host is reachable
+            return base
         except Exception:
             continue
     return None
@@ -35,44 +39,63 @@ def post_json(url, payload):
 
 def onboard(base):
     status = get_json(base + "/api/onboarding")
-    if not status.get("onboarding"):
+    proceed = True
+    if isinstance(status, dict):
+        proceed = status.get("onboarding", True)
+    elif isinstance(status, list):
+        proceed = any(not item.get("done", False) for item in status if isinstance(item, dict))
+    if not proceed:
         return
     # Create user
-    post_json(
-        base + "/api/onboarding/users",
-        {
-            "client_id": base,
-            "language": "en",
-            "name": "Admin",
-            "username": "admin",
-            "password": "adminpw123",
-        },
-    )
-    # Core config
-    post_json(
-        base + "/api/onboarding/core_config",
-        {
-            "location": {
-                "latitude": 0,
-                "longitude": 0,
-                "elevation": 0,
-                "unit_system": "metric",
-                "currency": "USD",
+    try:
+        post_json(
+            base + "/api/onboarding/users",
+            {
+                "client_id": base,
                 "language": "en",
-                "time_zone": "UTC",
-                "country": "US",
+                "name": "Admin",
+                "username": "admin",
+                "password": "adminpw123",
             },
-        },
-    )
+        )
+    except urllib.error.HTTPError:
+        pass
+    # Core config
+    try:
+        post_json(
+            base + "/api/onboarding/core_config",
+            {
+                "location": {
+                    "latitude": 48.2167,
+                    "longitude": -1.6986,
+                    "elevation": 60,
+                    "unit_system": "metric",
+                    "currency": "EUR",
+                    "language": "en",
+                    "time_zone": "Europe/Paris",
+                    "country": "FR",
+                },
+            },
+        )
+    except urllib.error.HTTPError:
+        pass
     # Analytics opt-out
-    post_json(
-        base + "/api/onboarding/analytics",
-        {"analytics": False},
-    )
+    try:
+        post_json(
+            base + "/api/onboarding/analytics",
+            {"analytics": False},
+        )
+    except urllib.error.HTTPError:
+        pass
 
 
 def main():
-    base = first_base()
+    base = None
+    for _ in range(30):
+        base = first_base()
+        if base:
+            break
+        time.sleep(2)
     if not base:
         raise SystemExit("Home Assistant not reachable for onboarding")
     onboard(base)

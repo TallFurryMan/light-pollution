@@ -48,7 +48,7 @@ the tests against the live stack:
 
 ```bash
 docker compose -f src/docker-compose.yml up -d
-docker compose -f src/docker-compose.yml run --rm test_runner python -m unittest discover -s tests
+docker compose -f src/docker-compose.yml run --rm test_runner sh -c "pip install -q -r tests/requirements.txt && python -m unittest discover -s tests"
 ```
 
 The repository is mounted at `/workspace` inside the test container so

@@ -2,6 +2,8 @@ import socket
 import unittest
 import urllib.request
 import urllib.error
+import json
+import time
 
 HA_ENDPOINTS = [
     "http://ha:8123",
@@ -18,6 +20,16 @@ MQTT_PORT = 1883
 CHIRPSTACK_ENDPOINTS = [
     "http://chirpstack:8080",
     "http://localhost:8087",
+]
+MQTT_DISCOVERY_TOPICS = [
+    "homeassistant/device_tracker/melesse1/config",
+    "homeassistant/device_tracker/melesse2/config",
+    "homeassistant/sensor/melesse_lux/config",
+]
+MQTT_STATE_TOPICS = [
+    "melesse/trackers/melesse1",
+    "melesse/trackers/melesse2",
+    "melesse/sensors/lux",
 ]
 
 
@@ -79,6 +91,38 @@ class StackSmokeTests(unittest.TestCase):
             return
         self.assertGreaterEqual(status, 200)
         self.assertLess(status, 400)
+
+    def test_mqtt_discovery_and_states(self):
+        try:
+            import paho.mqtt.client as mqtt
+        except ImportError:
+            self.skipTest("paho-mqtt not installed in test runner")
+            return
+
+        received = {}
+
+        def on_message(client, userdata, msg):
+            received[msg.topic] = msg.payload
+
+        client = mqtt.Client()
+        client.connect("mosquitto", 1883, 60)
+        client.on_message = on_message
+        for t in MQTT_DISCOVERY_TOPICS + MQTT_STATE_TOPICS:
+            client.subscribe(t)
+        client.loop_start()
+        time.sleep(10)
+        client.loop_stop()
+        client.disconnect()
+
+        missing = [t for t in MQTT_DISCOVERY_TOPICS + MQTT_STATE_TOPICS if t not in received]
+        if missing:
+            self.fail(f"Missing MQTT topics: {missing}")
+        # Basic content checks
+        lux_payload = json.loads(received["melesse/sensors/lux"])
+        self.assertIn("lux", lux_payload)
+        tracker_payload = json.loads(received["melesse/trackers/melesse1"])
+        self.assertIn("latitude", tracker_payload)
+        self.assertIn("longitude", tracker_payload)
 
 
 if __name__ == "__main__":
