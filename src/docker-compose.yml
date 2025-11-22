@@ -21,6 +21,12 @@ services:
       - "1883:1883"
     networks:
       - backend
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t '$SYS/#' -C 1 -W 3 >/dev/null"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
   chirpstack:
@@ -104,7 +110,7 @@ services:
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
       DOCKER_INFLUXDB_INIT_USERNAME: admin
-      DOCKER_INFLUXDB_INIT_PASSWORD: adminpw
+      DOCKER_INFLUXDB_INIT_PASSWORD: adminpw123
       DOCKER_INFLUXDB_INIT_ORG: homeassistant
       DOCKER_INFLUXDB_INIT_BUCKET: homeassistant
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ha-dev-token
@@ -112,6 +118,12 @@ services:
       - "8086:8086"
     networks:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     volumes:
       - influx-data:/var/lib/influxdb2
 
