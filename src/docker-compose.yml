@@ -3,6 +3,11 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: ha
     restart: unless-stopped
+    command: >
+      /bin/sh -c "if [ ! -f /config/.seeded ]; then
+        cp -r /config-seed/. /config/ && touch /config/.seeded;
+      fi;
+      exec /init"
     ports:
       - "8123:8123"
     networks:
@@ -13,6 +18,7 @@ services:
     volumes:
       - ha-config:/config
       - ./configuration.yaml:/config/configuration.yaml
+      - ./config-seed:/config-seed:ro
   mqtt:
     image: eclipse-mosquitto:2.0
     container_name: mosquitto
