@@ -41,6 +41,9 @@ InfluxDB integration pointing at `http://influxdb:8086`. Mosquitto is
 exposed on `tcp://localhost:1883` for local testing and ChirpStack’s UI
 is available on `http://localhost:8087`.
 
+### Default credentials (seeded for tests)
+- Home Assistant: `admin` / `adminpw123`
+
 ### Running tests inside the stack
 
 An optional `test_runner` container (Python 3.10) is included. To run

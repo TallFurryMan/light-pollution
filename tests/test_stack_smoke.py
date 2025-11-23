@@ -15,6 +15,8 @@ INFLUX_ENDPOINTS = [
     "http://localhost:8086/health",
 ]
 INFLUX_TOKEN = "ha-dev-token"
+HA_USER = "admin"
+HA_PASSWORD = "adminpw123"
 MQTT_HOSTS = ["mosquitto", "mqtt", "localhost"]
 MQTT_PORT = 1883
 CHIRPSTACK_ENDPOINTS = [
