@@ -1,15 +1,17 @@
-import json
 import sys
+import time
 import urllib.request
 import urllib.error
 import urllib.parse
-import time
 
 HA_ENDPOINTS = [
     "http://ha:8123",
     "http://homeassistant:8123",
     "http://localhost:8123",
 ]
+
+USERNAME = "admin"
+PASSWORD = "adminpw123"
 
 
 def first_base():
@@ -18,97 +20,18 @@ def first_base():
             urllib.request.urlopen(base + "/api/", timeout=3)
             return base
         except urllib.error.HTTPError:
-            # Any HTTP response means the host is reachable
             return base
         except Exception:
             continue
     return None
 
 
-def get_json(url):
-    with urllib.request.urlopen(url, timeout=5) as resp:
-        return json.loads(resp.read().decode())
-
-
-def post_json(url, payload, headers=None):
-    data = json.dumps(payload).encode()
-    req = urllib.request.Request(
-        url, data=data, headers=headers or {"Content-Type": "application/json"}
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=5) as resp:
-            return json.loads(resp.read().decode())
-    except urllib.error.HTTPError as e:
-        body = e.read().decode() if e.fp else ""
-        return {"error": e.code, "body": body}
-
-
-def onboard(base):
-    status = get_json(base + "/api/onboarding")
-    proceed = True
-    if isinstance(status, dict):
-        proceed = status.get("onboarding", True)
-    elif isinstance(status, list):
-        proceed = any(not item.get("done", False) for item in status if isinstance(item, dict))
-    if not proceed:
-        return True
-    # Step 1: core config (no auth, should work during onboarding)
-    resp = post_json(
-        base + "/api/onboarding/core_config",
-        {
-            "location": {
-                "location_name": "Melesse Home",
-                "latitude": 48.2167,
-                "longitude": -1.6986,
-                "elevation": 60,
-                "unit_system": "metric",
-                "currency": "EUR",
-                "language": "en",
-                "time_zone": "Europe/Paris",
-                "country": "FR",
-            },
-            "external_url": "",
-            "internal_url": "",
-            "use_ssl": False,
-        },
-    )
-    if isinstance(resp, dict) and resp.get("error") not in (None, 401, 403):
-        raise RuntimeError(f"Core config failed: {resp}")
-    # Step 2: analytics
-    resp = post_json(
-        base + "/api/onboarding/analytics",
-        {"analytics": False},
-    )
-    if isinstance(resp, dict) and resp.get("error") not in (None, 401, 403):
-        raise RuntimeError(f"Analytics step failed: {resp}")
-    # Step 3: create user
-    resp = post_json(
-        base + "/api/onboarding/users",
-        {
-            "client_id": base,
-            "language": "en",
-            "name": "Admin",
-            "username": "admin",
-            "password": "adminpw123",
-        },
-    )
-    if isinstance(resp, dict) and resp.get("error") not in (None, 401, 403):
-        raise RuntimeError(f"User creation failed: {resp}")
-    # Final check
-    status = get_json(base + "/api/onboarding")
-    if (isinstance(status, dict) and status.get("onboarding", False)) or (
-        isinstance(status, list) and any(not item.get("done", False) for item in status if isinstance(item, dict))
-    ):
-        raise RuntimeError("Onboarding still pending after attempts")
-    return True
-
-
-def try_login(base):
+def can_login(base):
     data = urllib.parse.urlencode(
         {
             "grant_type": "password",
-            "username": "admin",
-            "password": "adminpw123",
+            "username": USERNAME,
+            "password": PASSWORD,
             "client_id": base,
         }
     ).encode()
@@ -124,25 +47,6 @@ def try_login(base):
         return False
 
 
-def get_token(base):
-    data = urllib.parse.urlencode(
-        {
-            "grant_type": "password",
-            "username": "admin",
-            "password": "adminpw123",
-            "client_id": base,
-        }
-    ).encode()
-    req = urllib.request.Request(
-        base + "/auth/token",
-        data=data,
-        headers={"Content-Type": "application/x-www-form-urlencoded"},
-    )
-    with urllib.request.urlopen(req, timeout=5) as resp:
-        result = json.loads(resp.read().decode())
-        return result.get("access_token")
-
-
 def main():
     base = None
     for idx in range(30):
@@ -153,11 +57,9 @@ def main():
         if idx == 0:
             print("Home Assistant not reachable yet, waiting for startup...", file=sys.stderr)
     if not base:
-        raise SystemExit("Home Assistant not reachable for onboarding")
-    if try_login(base):
-        return
-    if not onboard(base):
-        raise SystemExit("Onboarding did not complete")
+        raise SystemExit("Home Assistant not reachable for login")
+    if not can_login(base):
+        raise SystemExit("Home Assistant login failed with seeded credentials")
 
 
 if __name__ == "__main__":
