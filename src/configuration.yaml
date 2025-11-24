@@ -21,6 +21,4 @@ influxdb2:
   auth_type: "none"
 
 mqtt:
-  broker: mosquitto
-  discovery: true
-  discovery_prefix: homeassistant
+  # MQTT connection is preseeded via core.config_entries; no YAML options needed.
