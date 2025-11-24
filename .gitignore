@@ -31,3 +31,7 @@ node_modules/
 # Temporary scratch files
 *.tmp
 
+# Home Assistant runtime volumes (not committed)
+src/ha-config
+src/config
+src/config-seed/.ha_run.lock

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "core.restore_state",
+  "data": [
+    {
+      "state": {"entity_id":"event.backup_automatic_backup","state":"unknown","attributes":{"event_types":["completed","failed","in_progress"],"event_type":null,"friendly_name":"Backup Automatic backup"},"last_changed":"2025-11-23T13:32:08.023484+00:00","last_reported":"2025-11-23T13:32:08.023484+00:00","last_updated":"2025-11-23T13:32:08.023484+00:00","context":{"id":"01KAREMAYQGG4WDF30QS56YZJK","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "last_event_type": null,
+        "last_event_attributes": null
+      },
+      "last_seen": "2025-11-23T13:33:41.943135+00:00"
+    },
+    {
+      "state": {"entity_id":"person.admin","state":"unknown","attributes":{"editable":true,"id":"admin","device_trackers":[],"user_id":"258433189e18479a97b4dbc2f8c2613a","friendly_name":"admin"},"last_changed":"2025-11-23T13:32:49.005107+00:00","last_reported":"2025-11-23T13:32:49.005107+00:00","last_updated":"2025-11-23T13:32:49.005107+00:00","context":{"id":"01KARENJZD75PD707ZBXSBB2XG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-11-23T13:33:41.943135+00:00"
+    },
+    {
+      "state": {"entity_id":"tts.google_translate_en_com","state":"unknown","attributes":{"friendly_name":"Google Translate en com"},"last_changed":"2025-11-23T13:33:02.303661+00:00","last_reported":"2025-11-23T13:33:02.303661+00:00","last_updated":"2025-11-23T13:33:02.303661+00:00","context":{"id":"01KARENZYZDWK1BAR9ZHF6NEEE","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-11-23T13:33:41.943135+00:00"
+    }
+  ]
+}
