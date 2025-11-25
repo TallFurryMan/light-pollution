@@ -106,7 +106,7 @@ class StackSmokeTests(unittest.TestCase):
         def on_message(client, userdata, msg):
             received[msg.topic] = msg.payload
 
-        client = mqtt.Client()
+        client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
         client.connect("mosquitto", 1883, 60)
         client.on_message = on_message
         for t in MQTT_DISCOVERY_TOPICS + MQTT_STATE_TOPICS:

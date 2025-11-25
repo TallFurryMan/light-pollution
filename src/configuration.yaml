@@ -5,8 +5,8 @@
 # Enable the integration
 homeassistant:
   name: HomeAssistant
-  latitude: 0
-  longitude: 0
+  latitude: 48.2175823
+  longitude: -1.6962403
   elevation: 0
   unit_system: metric
   time_zone: UTC
