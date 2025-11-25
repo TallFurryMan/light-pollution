@@ -158,10 +158,14 @@ def make_lora(cfg, spi=None, pin_cls=Pin, lora_cls=LoRa):
 
 def make_payload(cfg, lux, charger, now_fn=None):
     now_fn = now_fn or (lambda: int(time.time()))
+    lat = cfg.get("lat", DEFAULT_CONFIG["lat"])
+    lon = cfg.get("lon", DEFAULT_CONFIG["lon"])
     return {
         "name": cfg.get("name", DEFAULT_CONFIG["name"]),
-        "lat": cfg.get("lat", DEFAULT_CONFIG["lat"]),
-        "lon": cfg.get("lon", DEFAULT_CONFIG["lon"]),
+        "latitude": lat,
+        "longitude": lon,
+        "gps": [lat, lon],
+        "state": "home",
         "lux": lux,
         "ts": int(now_fn()),
         "charger_type": cfg.get("charger_type", DEFAULT_CONFIG["charger_type"]),
