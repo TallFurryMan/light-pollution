@@ -1,8 +1,8 @@
 ## Server‑Side Setup
 
-[![Stack Tests](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/stack-tests.yml/badge.svg)](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/stack-tests.yml)
-[![Latest Release](https://img.shields.io/github/v/release/tallfurryman/lora-to-mqtt?include_prereleases&label=latest%20release)](https://github.com/tallfurryman/lora-to-mqtt/releases)
-[![Docs](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/gh-pages.yml)
+[![Stack Tests](https://github.com/tallfurryman/light-pollution/actions/workflows/stack-tests.yml/badge.svg)](https://github.com/tallfurryman/light-pollution/actions/workflows/stack-tests.yml)
+[![Latest Release](https://img.shields.io/github/v/release/tallfurryman/light-pollution?include_prereleases&label=latest%20release)](https://github.com/tallfurryman/light-pollution/releases)
+[![Docs](https://github.com/tallfurryman/light-pollution/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/tallfurryman/light-pollution/actions/workflows/gh-pages.yml)
 
 The repository includes a `docker-compose.yml` that runs Home Assistant,
 Mosquitto MQTT, the LoRa gateway and an **InfluxDB** instance.  The

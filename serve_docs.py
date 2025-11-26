@@ -18,10 +18,7 @@ import pathlib
 import os
 
 PORT = 8000
-# Default to French docs; can override with DOCS_LANG=en
-LANG = os.environ.get("DOCS_LANG", "fr")
-base_dir = pathlib.Path(__file__).parent / "docs"
-DOCS_DIR = base_dir / LANG if (base_dir / LANG).exists() else base_dir
+DOCS_DIR = pathlib.Path(__file__).parent / "docs"
 
 # Serve the pre‑generated index.html that renders the markdown files.
 class DocsHandler(http.server.SimpleHTTPRequestHandler):
