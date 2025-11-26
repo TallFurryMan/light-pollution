@@ -13,17 +13,29 @@ A web page will be available at http://localhost:8000.
 
 import http.server
 import socketserver
-import os
+import urllib.parse
 import pathlib
 import os
 
 PORT = 8000
 DOCS_DIR = pathlib.Path(__file__).parent / "docs"
 
-# Serve the pre‑generated index.html that renders the markdown files.
+# Serve docs with language-aware paths (/en, /fr).
 class DocsHandler(http.server.SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=str(DOCS_DIR), **kwargs)
+    def translate_path(self, path):
+        parsed = urllib.parse.urlparse(path).path
+        # Normalize to strip leading slashes
+        if parsed.startswith("/en/"):
+            root = DOCS_DIR / "en"
+            rel = parsed[len("/en/") :]
+        elif parsed.startswith("/fr/"):
+            root = DOCS_DIR / "fr"
+            rel = parsed[len("/fr/") :]
+        else:
+            root = DOCS_DIR
+            rel = parsed.lstrip("/")
+        full = (root / rel).resolve()
+        return str(full)
 
     def end_headers(self):
         # Allow cross‑origin requests during local browsing.

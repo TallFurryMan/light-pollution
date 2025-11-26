@@ -1,64 +1,28 @@
-<!-- docs/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Light‑Pollution Monitor Docs</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <meta http-equiv="refresh" content="0; url=/fr/index.html">
+  <title>Documentation – Light Pollution Project</title>
   <style>
     :root { --bg:#f5f5f5; --fg:#1f2933; --accent:#0b7285; }
-    * { box-sizing: border-box; }
     body{font-family:sans-serif;margin:0;background:var(--bg);color:var(--fg);}
-    header{background:#fff;border-bottom:1px solid #e5e7eb;padding:1rem 2rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:center;}
-    header a{color:var(--accent);text-decoration:none;font-weight:600;white-space:nowrap;}
-    header a:hover{text-decoration:underline;}
-    main{max-width:900px;margin:2rem auto;padding:0 1rem;}
-    .card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.05);padding:1.5rem;}
-    .card h1{margin-top:0;}
-    nav{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem;}
-    nav a{padding:0.4rem 0.8rem;border-radius:999px;border:1px solid #e5e7eb;background:#fff;color:var(--fg);text-decoration:none;font-weight:600;white-space:nowrap;}
-    nav a:hover{border-color:var(--accent);color:var(--accent);}
+    main{max-width:600px;margin:4rem auto;padding:0 1rem;text-align:center;}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.05);padding:2rem;}
+    a.btn{display:inline-block;margin:0.5rem;padding:0.6rem 1.2rem;border-radius:999px;border:1px solid #e5e7eb;background:#fff;color:var(--accent);text-decoration:none;font-weight:700;}
+    a.btn:hover{border-color:var(--accent);}
   </style>
 </head>
 <body>
-  <header>
-    <a href="index.html">English</a>
-    <a href="fr/index.html">Français</a>
-  </header>
   <main>
-    <nav id="nav"></nav>
-    <div class="card" id="app"></div>
+    <div class="card">
+      <h1>Choose language / Choisissez la langue</h1>
+      <p>
+        <a class="btn" href="/en/index.html">🇬🇧 English</a>
+        <a class="btn" href="/fr/index.html">🇫🇷 Français</a>
+      </p>
+      <p>Redirecting to Français…</p>
+    </div>
   </main>
-  <script>
-    const files=[
-      {file:'PRESENTATION.md', label:'Presentation'},
-      {file:'ARCHITECTURE.md', label:'Architecture'},
-      {file:'KIDS.md', label:'Kids'},
-      {file:'ASSEMBLY.md', label:'Assembly'},
-      {file:'HARDWARE.md', label:'Hardware'},
-    ];
-    const app=document.getElementById('app');
-    const nav=document.getElementById('nav');
-    let current=files[0].file;
-    function renderNav(){
-      nav.innerHTML='';
-      files.forEach(f=>{
-        const a=document.createElement('a');
-        a.textContent=f.label;
-        a.href="#";
-        a.onclick=(e)=>{e.preventDefault(); loadFile(f.file);};
-        nav.appendChild(a);
-      });
-    }
-    function loadFile(f){
-      current=f;
-      fetch(f).then(r=>r.text()).then(md=>{
-        app.innerHTML=marked.parse(md);
-        window.scrollTo({top:0,behavior:'smooth'});
-      });
-    }
-    renderNav();
-    loadFile(current);
-  </script>
 </body>
 </html>
