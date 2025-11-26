@@ -26,12 +26,16 @@ CHIRPSTACK_ENDPOINTS = [
 MQTT_DISCOVERY_TOPICS = [
     "homeassistant/device_tracker/melesse1/config",
     "homeassistant/device_tracker/melesse2/config",
-    "homeassistant/sensor/melesse_lux/config",
+    "homeassistant/device_tracker/melesse3/config",
+    "homeassistant/device_tracker/melesse4/config",
+    "homeassistant/device_tracker/melesse5/config",
 ]
 MQTT_STATE_TOPICS = [
     "melesse/trackers/melesse1",
     "melesse/trackers/melesse2",
-    "melesse/sensors/lux",
+    "melesse/trackers/melesse3",
+    "melesse/trackers/melesse4",
+    "melesse/trackers/melesse5",
 ]
 
 
@@ -120,11 +124,10 @@ class StackSmokeTests(unittest.TestCase):
         if missing:
             self.fail(f"Missing MQTT topics: {missing}")
         # Basic content checks
-        lux_payload = json.loads(received["melesse/sensors/lux"])
-        self.assertIn("lux", lux_payload)
         tracker_payload = json.loads(received["melesse/trackers/melesse1"])
         self.assertIn("latitude", tracker_payload)
         self.assertIn("longitude", tracker_payload)
+        self.assertIn("lux", tracker_payload)
 
 
 if __name__ == "__main__":
