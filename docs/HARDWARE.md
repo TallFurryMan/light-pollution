@@ -1,4 +1,3 @@
----
 # Hardware Design – Light‑Pollution Monitor (Pico + LoRa)
 
 ## 1. Bill of Materials (BOM)

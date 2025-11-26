@@ -1,4 +1,3 @@
----
 # Matériel
 
 ## Liste de pièces (BOM)

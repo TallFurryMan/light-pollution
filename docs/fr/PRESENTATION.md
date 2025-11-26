@@ -1,4 +1,3 @@
----
 # Projet de suivi de la pollution lumineuse
 
 ## Présentation

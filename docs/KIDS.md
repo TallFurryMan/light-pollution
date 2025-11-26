@@ -1,4 +1,3 @@
----
 # Light‑Pollution Monitor – What Kids Need to Know
 
 ## Overview

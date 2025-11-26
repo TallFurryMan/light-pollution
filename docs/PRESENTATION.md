@@ -1,4 +1,3 @@
----
 # Light‑Pollution Monitoring Project
 
 ## Overview
@@ -48,4 +47,3 @@
   timestamp, and last sensor reading.
 - Students can explain the data flow from sensor to cloud.
 **All done!**
-

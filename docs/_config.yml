@@ -1,0 +1,15 @@
+title: "Light Pollution Docs"
+baseurl: "/light-pollution"
+url: "https://tallfurryman.github.io"
+
+remote_theme: "academicpages/academicpages.github.io"
+
+plugins:
+  - jekyll-remote-theme
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: single
+      author_profile: false

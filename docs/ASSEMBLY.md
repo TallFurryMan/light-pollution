@@ -1,4 +1,3 @@
----
 # Step‑by‑Step Assembly Guide
 This guide walks you through building a **Light‑Pollution Monitor** from the parts list. All you need is a soldering iron and a small multimeter.
 

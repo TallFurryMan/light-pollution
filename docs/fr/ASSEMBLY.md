@@ -1,4 +1,3 @@
----
 # Guide de montage pas à pas
 
 ## 1. Préparer la breadboard

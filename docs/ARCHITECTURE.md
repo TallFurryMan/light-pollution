@@ -1,4 +1,3 @@
----
 # System Architecture
 
 ## 1. Overview

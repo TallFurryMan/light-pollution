@@ -1,4 +1,3 @@
----
 # Architecture du système
 
 ## 1. Vue d’ensemble
