@@ -2,6 +2,7 @@
 
 [![Stack Tests](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/stack-tests.yml/badge.svg)](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/stack-tests.yml)
 [![Latest Release](https://img.shields.io/github/v/release/tallfurryman/lora-to-mqtt?include_prereleases&label=latest%20release)](https://github.com/tallfurryman/lora-to-mqtt/releases)
+[![Docs](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/tallfurryman/lora-to-mqtt/actions/workflows/gh-pages.yml)
 
 The repository includes a `docker-compose.yml` that runs Home Assistant,
 Mosquitto MQTT, the LoRa gateway and an **InfluxDB** instance.  The
@@ -56,3 +57,8 @@ docker compose -f src/docker-compose.yml run --rm test_runner sh -c "pip install
 
 The repository is mounted at `/workspace` inside the test container so
 artifacts and results are available on the host.
+
+### Documentation
+- English docs live in `docs/`.
+- French quickstart for students: `docs/fr/KIDS.md`.
+- GitHub Pages publishes the `docs` folder via the `Deploy Docs` workflow.
