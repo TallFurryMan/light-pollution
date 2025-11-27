@@ -2,7 +2,6 @@
 lang: fr
 layout: single
 title: "Présentation"
-permalink: /fr/PRESENTATION/
 ---
 # Projet de suivi de la pollution lumineuse
 

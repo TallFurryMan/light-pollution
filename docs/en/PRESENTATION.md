@@ -2,7 +2,6 @@
 lang: en
 layout: single
 title: "Presentation"
-permalink: /en/PRESENTATION/
 ---
 # Light‑Pollution Monitoring Project
 
