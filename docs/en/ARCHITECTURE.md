@@ -1,4 +1,9 @@
 ---
+---
+lang: en
+layout: single
+title: "System Architecture"
+---
 # System Architecture
 
 ## 1. Overview

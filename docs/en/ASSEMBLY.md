@@ -1,4 +1,9 @@
 ---
+---
+lang: en
+layout: single
+title: "Step-by-Step Assembly"
+---
 # Step‑by‑Step Assembly
 
 ## 1. Prep the breadboard

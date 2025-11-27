@@ -1,4 +1,9 @@
 ---
+---
+lang: en
+layout: single
+title: "Kids Quickstart"
+---
 # Light‑Pollution Monitor – What Kids Need to Know
 
 ## Overview

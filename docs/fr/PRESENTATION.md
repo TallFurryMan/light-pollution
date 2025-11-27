@@ -1,3 +1,8 @@
+---
+lang: fr
+layout: single
+title: "Présentation"
+---
 # Projet de suivi de la pollution lumineuse
 
 ## Présentation

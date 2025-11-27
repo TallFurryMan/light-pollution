@@ -1,4 +1,9 @@
 ---
+---
+lang: en
+layout: single
+title: "Hardware"
+---
 # Hardware
 
 ## Bill of Materials

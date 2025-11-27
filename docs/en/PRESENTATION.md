@@ -1,4 +1,9 @@
 ---
+---
+lang: en
+layout: single
+title: "Project Overview"
+---
 # Light‑Pollution Monitoring Project
 
 ## Overview

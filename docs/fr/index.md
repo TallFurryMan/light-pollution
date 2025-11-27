@@ -5,10 +5,10 @@ permalink: /fr/
 ---
 
 ## Pages
-- [Présentation](PRESENTATION.md)
-- [Architecture](ARCHITECTURE.md)
-- [Élèves](KIDS.md)
-- [Assemblage](ASSEMBLY.md)
-- [Matériel](HARDWARE.md)
+- [Présentation](/fr/PRESENTATION.html)
+- [Architecture](/fr/ARCHITECTURE.html)
+- [Élèves](/fr/KIDS.html)
+- [Assemblage](/fr/ASSEMBLY.html)
+- [Matériel](/fr/HARDWARE.html)
 
-[English](../en/index.html)
+[English](/en/)

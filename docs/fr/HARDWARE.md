@@ -1,3 +1,8 @@
+---
+lang: fr
+layout: single
+title: "Matériel"
+---
 # Matériel
 
 ## Liste de pièces (BOM)

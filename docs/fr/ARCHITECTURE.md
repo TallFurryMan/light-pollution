@@ -1,3 +1,8 @@
+---
+lang: fr
+layout: single
+title: "Architecture du système"
+---
 # Architecture du système
 
 ## 1. Vue d’ensemble

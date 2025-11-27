@@ -4,6 +4,16 @@ url: "https://tallfurryman.github.io"
 
 remote_theme: "academicpages/academicpages.github.io"
 
+collections:
+  en:
+    output: true
+    permalink: /en/:path/
+    lang: en
+  fr:
+    output: true
+    permalink: /fr/:path/
+    lang: fr
+
 plugins:
   - jekyll-remote-theme
 
@@ -13,3 +23,15 @@ defaults:
     values:
       layout: single
       author_profile: false
+  - scope:
+      path: "en"
+      type: en
+    values:
+      lang: en
+      layout: single
+  - scope:
+      path: "fr"
+      type: fr
+    values:
+      lang: fr
+      layout: single
