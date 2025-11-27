@@ -11,4 +11,4 @@ permalink: /en/
 - [Assembly](/en/ASSEMBLY.html)
 - [Hardware](/en/HARDWARE.html)
 
-[Français](/fr/)
+[Français]({{ site.baseurl }}/fr/)
