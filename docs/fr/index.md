@@ -1,14 +1,14 @@
 ---
 layout: single
-title: "Docs – Français"
+title: ""
 permalink: /fr/
 ---
 
 ## Pages
-- [Présentation](/fr/PRESENTATION.html)
-- [Architecture](/fr/ARCHITECTURE.html)
-- [Élèves](/fr/KIDS.html)
-- [Assemblage](/fr/ASSEMBLY.html)
-- [Matériel](/fr/HARDWARE.html)
+- [Présentation](PRESENTATION)
+- [Architecture](ARCHITECTURE)
+- [Élèves](KIDS)
+- [Assemblage](ASSEMBLY)
+- [Matériel](HARDWARE)
 
-[English](../en/)
+[English](/en/)
