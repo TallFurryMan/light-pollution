@@ -1,6 +1,6 @@
 ---
 layout: single
-title: ""
+title: "Docs – Français"
 permalink: /fr/
 ---
 
@@ -11,4 +11,5 @@ permalink: /fr/
 - [Assemblage](ASSEMBLY)
 - [Matériel](HARDWARE)
 
+<hr>
 [English](/en/)
