@@ -4,14 +4,17 @@ url: "https://tallfurryman.github.io"
 
 remote_theme: "academicpages/academicpages.github.io"
 
+language_default: fr
+
+collections_dir: "docs"
 collections:
   en:
     output: true
-    permalink: /en/:path/
+    permalink: /:collection/:path/
     lang: en
   fr:
     output: true
-    permalink: /fr/:path/
+    permalink: /:collection/:path/
     lang: fr
 
 plugins:

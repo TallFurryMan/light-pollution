@@ -1,52 +1,54 @@
 #!/usr/bin/env python3
-"""Simple HTTP server to serve the `docs` folder.
+"""Build and serve docs with the same Jekyll stack as GitHub Pages.
 
-This script is intended for quick local documentation browsing.
-After installing the repository, run:
+Requirements:
+- Docker available locally.
 
-```bash
-python serve_docs.py
-```
+Usage:
+  python serve_docs.py
 
-A web page will be available at http://localhost:8000.
+This will start a container running the GitHub Pages Jekyll image,
+build the site from ./docs using the remote academicpages theme,
+and serve it on http://localhost:8080.
 """
 
-import http.server
-import socketserver
-import urllib.parse
-import pathlib
-import os
+import subprocess
+import sys
+from pathlib import Path
 
-PORT = 8000
-DOCS_DIR = pathlib.Path(__file__).parent / "docs"
+IMAGE = "ghcr.io/actions/jekyll-build-pages:v1.0.13"
+HOST_PORT = 8080
+CONTAINER_PORT = 4000
+REPO_ROOT = Path(__file__).parent.resolve()
 
-# Serve docs with language-aware paths (/en, /fr).
-class DocsHandler(http.server.SimpleHTTPRequestHandler):
-    def translate_path(self, path):
-        parsed = urllib.parse.urlparse(path).path
-        # Normalize to strip leading slashes
-        if parsed.startswith("/en/"):
-            root = DOCS_DIR / "en"
-            rel = parsed[len("/en/") :]
-        elif parsed.startswith("/fr/"):
-            root = DOCS_DIR / "fr"
-            rel = parsed[len("/fr/") :]
-        else:
-            root = DOCS_DIR
-            rel = parsed.lstrip("/")
-        full = (root / rel).resolve()
-        return str(full)
 
-    def end_headers(self):
-        # Allow cross‑origin requests during local browsing.
-        self.send_header("Access-Control-Allow-Origin", "*")
-        super().end_headers()
+def run_server():
+    cmd = [
+        "docker",
+        "run",
+        "--rm",
+        "-p", f"{HOST_PORT}:{CONTAINER_PORT}",
+        "-v", f"{REPO_ROOT}:/github/workspace",
+        "-w", "/github/workspace/docs",
+        IMAGE,
+        "bash",
+        "-lc",
+        (
+            "bundle exec jekyll serve "
+            "--config _config.yml "
+            "--destination /tmp/_site "
+            "--future "
+            "--host 0.0.0.0 "
+            f"--port {CONTAINER_PORT}"
+        ),
+    ]
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        sys.stderr.write(f"Failed to start Jekyll server: {e}\n")
+        sys.exit(1)
 
-    def log_message(self, format, *args):
-        # Silence the default stdout logs.
-        return
 
 if __name__ == "__main__":
-    with socketserver.TCPServer(("", PORT), DocsHandler) as httpd:
-        print(f"Serving docs at http://localhost:{PORT}")
-        httpd.serve_forever()
+    print(f"Serving docs via Jekyll at http://localhost:{HOST_PORT}")
+    run_server()
