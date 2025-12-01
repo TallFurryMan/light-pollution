@@ -1,13 +1,13 @@
 ---
----
 lang: en
 layout: single
 title: "System Architecture"
+permalink: /en/architecture
+translation_reference: architecture
 ---
-# System Architecture
-
 ## 1. Overview
 The project has three layers:
+
 | Layer | Components | Communication | Purpose |
 |-------|------------|---------------|---------|
 | **Device** | Raspberry Pi Pico, LoRa SX127x/SX1262, light sensor (TEMT6000, TSL2591, BH1750), Li‑Po battery | LoRa | Local sensing and low‑power TX |

@@ -1,11 +1,10 @@
 ---
----
 lang: en
 layout: single
-title: "Kids Quickstart"
+title: "What Kids Need to Know"
+permalink: /en/kids
+translation_reference: kids
 ---
-# Light‑Pollution Monitor – What Kids Need to Know
-
 ## Overview
 Written for 12‑14 year olds to follow the build, code, and cloud steps.
 

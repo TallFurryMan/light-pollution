@@ -1,14 +1,18 @@
 ---
 lang: fr
 layout: single
-title: "Présentation"
+title: "Projet de suivi de la pollution lumineuse"
+permalink: /fr/
+redirect_from:
+  - /
+translation_reference: presentation
 ---
-# Projet de suivi de la pollution lumineuse
-
 ## Vue d’ensemble
 * **But** – Réseau de capteurs autonomes qui mesurent la lumière nocturne, envoient les données à Home Assistant et les affichent sur une carte.
 * **Public** – Collégiens (12‑14 ans) en équipe.
 * **Pourquoi** – La pollution lumineuse nuit aux écosystèmes, au sommeil, et cache les étoiles. Mesurer permet d’apprendre la donnée, les réseaux et l’environnement.
+
+![Rendu Home Assistant](../images/ha-map.png)
 
 ## Livrables
 1) Kit matériel (Pico + capteur + LoRa + batterie)  

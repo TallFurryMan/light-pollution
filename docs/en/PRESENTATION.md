@@ -1,14 +1,19 @@
 ---
 lang: en
 layout: single
-title: "Presentation"
+title: "Light‑Pollution Monitoring Project"
+permalink: /en/
+redirect_from:
+  - /en/
+translation_reference: presentation
 ---
-# Light‑Pollution Monitoring Project
 
 ## Overview
 * **Goal** – Build a network of small, autonomous *Light‑Pollution Monitors* that collect night‑time lux data, upload to Home Assistant, and show the results on a map.
 * **Audience** – 12‑14 year old students in teams.
 * **Why it matters** – Light pollution harms ecosystems, disturbs sleep, and hides the stars. Measuring it teaches data, networking, and environmental stewardship.
+
+![Home Assistant view](../images/ha-map.png)
 
 ## Deliverables
 1) Hardware kit (Pico + light sensor + LoRa + battery)  

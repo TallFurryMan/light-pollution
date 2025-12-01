@@ -1,10 +1,10 @@
 ---
 lang: fr
 layout: single
-title: "Guide de montage"
+title: "Montage"
+permalink: /fr/assembly
+translation_reference: assembly
 ---
-# Guide de montage pas à pas
-
 ## 1. Préparer la breadboard
 1. Insérer le **Raspberry Pi Pico**.
 2. Relier **GND** au rail de masse, **3.3 V** au rail positif.

@@ -1,11 +1,10 @@
 ---
----
 lang: en
 layout: single
 title: "Hardware"
+permalink: /en/hardware
+translation_reference: hardware
 ---
-# Hardware
-
 ## Bill of Materials
 - Raspberry Pi Pico
 - LoRa module (SX127x or SX1262 Pico HAT)

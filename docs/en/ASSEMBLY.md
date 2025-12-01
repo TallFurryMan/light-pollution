@@ -1,11 +1,10 @@
 ---
----
 lang: en
 layout: single
 title: "Step-by-Step Assembly"
+permalink: /en/assembly
+translation_reference: assembly
 ---
-# Step‑by‑Step Assembly
-
 ## 1. Prep the breadboard
 1. Insert **Raspberry Pi Pico**.
 2. GND to ground rail, 3.3 V to positive rail.

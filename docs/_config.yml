@@ -2,7 +2,7 @@ title: "Light Pollution Docs"
 baseurl: "/light-pollution"
 url: "https://tallfurryman.github.io"
 
-remote_theme: "academicpages/academicpages.github.io"
+remote_theme: academicpages/academicpages.github.io
 
 language_default: fr
 
@@ -19,13 +19,14 @@ collections:
 
 plugins:
   - jekyll-remote-theme
+  - jekyll-redirect-from
 
 defaults:
   - scope:
       path: ""
     values:
       layout: single
-      author_profile: false
+      author_profile: true
   - scope:
       path: "en"
       type: en
@@ -38,3 +39,21 @@ defaults:
     values:
       lang: fr
       layout: single
+
+author:
+  name: "Eric Dejouhanet"
+  uri: "https://astronomy.dejouha.net"
+  github: "https://github.com/TallFurryMan"
+  avatar: "https://avatars.githubusercontent.com/u/22483335"
+  mastodon: "https://social.science.re/@tallfurryman"
+  email: "eric.dejouhanet@gmail.com"
+  location: "Rennes, France"
+  bio: "Development Operations by day, Independent Entrepreneur in astronomy by night. Contributor to INDI and KDE KStars. Physicial/digital games."
+
+breadcrumbs:
+  enabled: true
+
+permalink: /:collection/:path/
+
+sidebar:
+  nav: "main"

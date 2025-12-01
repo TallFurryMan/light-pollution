@@ -24,23 +24,23 @@ REPO_ROOT = Path(__file__).parent.resolve()
 
 def run_server():
     cmd = [
-        "docker",
-        "run",
-        "--rm",
+        "docker", "run", "--rm",
         "-p", f"{HOST_PORT}:{CONTAINER_PORT}",
-        "-v", f"{REPO_ROOT}:/github/workspace",
-        "-w", "/github/workspace/docs",
+        "-v", f"{REPO_ROOT}:/workspace",
+        "-e", "JEKYLL_ENV=vm",
+        "-w", "/workspace",
+        "--entrypoint", "bundle",
         IMAGE,
-        "bash",
-        "-lc",
+        "exec",
         (
-            "bundle exec jekyll serve "
-            "--config _config.yml "
-            "--destination /tmp/_site "
-            "--future "
+            "jekyll serve "
+            "--config docs/_config.yml,docs/_config.serve_docs.yml  "
+            "--source docs --destination /tmp/_site "
+            "--baseurl /light-pollution "
             "--host 0.0.0.0 "
-            f"--port {CONTAINER_PORT}"
-        ),
+            "--port {container_port} "
+            "--verbose --watch --future "
+        ).format(container_port=CONTAINER_PORT),
     ]
     try:
         subprocess.run(cmd, check=True)

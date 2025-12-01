@@ -1,5 +1,10 @@
-# Moniteur de pollution lumineuse – à destination des élèves
-
+---
+lang: fr
+layout: single
+title: "Elèves"
+permalink: /fr/kids
+translation_reference: kids
+---
 ## À quoi ça sert ?
 * Mesurer la lumière ambiante toutes les 15 minutes.
 * Ajouter le nom du capteur et ses coordonnées GPS.

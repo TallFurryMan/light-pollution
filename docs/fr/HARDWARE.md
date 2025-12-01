@@ -2,9 +2,9 @@
 lang: fr
 layout: single
 title: "Matériel"
+permalink: /fr/hardware
+translation_reference: hardware
 ---
-# Matériel
-
 ## Liste de pièces (BOM)
 - Raspberry Pi Pico
 - Module LoRa (SX127x ou HAT SX1262 pour Pico)

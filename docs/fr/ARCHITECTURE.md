@@ -2,14 +2,15 @@
 lang: fr
 layout: single
 title: "Architecture du système"
+permalink: /fr/architecture
+translation_reference: architecture
 ---
-# Architecture du système
-
 ## 1. Vue d’ensemble
 
 **Diagramme**
 
 Le projet comporte trois couches :
+
 | Couche | Composants | Liaison | Rôle |
 |-------|------------|---------|------|
 | **Capteur** | Raspberry Pi Pico, LoRa SX127x/SX1262, capteur de lumière (TEMT6000, TSL2591, BH1750), batterie Li‑Po | LoRa | Mesure locale et émission à faible consommation |

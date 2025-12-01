@@ -1,0 +1,10 @@
+{% assign pages = site.pages | where_exp:"page","page.lang == 'en' or page.lang == 'fr'" %}
+{% for page in pages %}
+  {% if page.permalink == nil %}
+    {% if page.lang == 'en' %}
+      {% assign page.permalink = '/en/' | append: page.url | remove_first: '/' | downcase %}
+    {% else %}
+      {% assign page.permalink = '/fr/' | append: page.url | remove_first: '/' | downcase %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
