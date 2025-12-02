@@ -6,17 +6,6 @@ remote_theme: academicpages/academicpages.github.io
 
 language_default: fr
 
-collections_dir: "docs"
-collections:
-  en:
-    output: true
-    permalink: /:collection/:path/
-    lang: en
-  fr:
-    output: true
-    permalink: /:collection/:path/
-    lang: fr
-
 plugins:
   - jekyll-remote-theme
   - jekyll-redirect-from

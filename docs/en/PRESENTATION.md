@@ -3,8 +3,6 @@ lang: en
 layout: single
 title: "Light‑Pollution Monitoring Project"
 permalink: /en/
-redirect_from:
-  - /en/
 translation_reference: presentation
 ---
 

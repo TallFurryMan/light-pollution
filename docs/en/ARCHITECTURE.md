@@ -1,7 +1,7 @@
 ---
 lang: en
 layout: single
-title: "System Architecture"
+title: "Architecture"
 permalink: /en/architecture
 translation_reference: architecture
 ---

@@ -1,7 +1,7 @@
 ---
 lang: fr
 layout: single
-title: "Elèves"
+title: "Ados"
 permalink: /fr/kids
 translation_reference: kids
 ---

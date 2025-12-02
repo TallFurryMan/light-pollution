@@ -1,7 +1,7 @@
 ---
 lang: en
 layout: single
-title: "Step-by-Step Assembly"
+title: "Assembly"
 permalink: /en/assembly
 translation_reference: assembly
 ---
