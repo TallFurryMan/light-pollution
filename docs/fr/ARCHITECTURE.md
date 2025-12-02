@@ -13,7 +13,7 @@ Le projet comporte trois couches :
 
 | Couche | Composants | Liaison | Rôle |
 |-------|------------|---------|------|
-| **Capteur** | Raspberry Pi Pico, LoRa SX127x/SX1262, capteur de lumière (TEMT6000, TSL2591, BH1750), batterie Li‑Po | LoRa | Mesure locale et émission à faible consommation |
+| **Capteur** | Raspberry Pi Pico, LoRa SX1262, capteur de lumière TSL2591, batterie Li‑Po | LoRa | Mesure locale et émission à faible consommation |
 | **Passerelle** | Raspberry Pi avec conteneurs **LoRa‑to‑MQTT** et Mosquitto | LoRa ➜ MQTT | Pont entre capteur et serveur |
 | **Serveur** | Conteneur Home Assistant (+ InfluxDB) | MQTT | Stockage, traitement et visualisation |
 

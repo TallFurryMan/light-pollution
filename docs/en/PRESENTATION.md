@@ -1,7 +1,7 @@
 ---
 lang: en
 layout: single
-title: "Light‑Pollution Monitoring Project"
+title: "Project"
 permalink: /en/
 translation_reference: presentation
 ---

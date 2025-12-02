@@ -1,7 +1,7 @@
 ---
 lang: en
 layout: single
-title: "Architecture"
+title: "Architecture of the project"
 permalink: /en/architecture
 translation_reference: architecture
 ---
@@ -10,7 +10,7 @@ The project has three layers:
 
 | Layer | Components | Communication | Purpose |
 |-------|------------|---------------|---------|
-| **Device** | Raspberry Pi Pico, LoRa SX127x/SX1262, light sensor (TEMT6000, TSL2591, BH1750), Li‑Po battery | LoRa | Local sensing and low‑power TX |
+| **Device** | Raspberry Pi Pico, LoRa SX1262, light sensor TSL2591, Li‑Po battery | LoRa | Local sensing and low‑power TX |
 | **Gateway** | Raspberry Pi with LoRa‑MQTT bridge + Mosquitto | LoRa ➜ MQTT | Bridge between sensor and server |
 | **Server** | Home Assistant (+ InfluxDB) | MQTT | Store, process, visualize |
 
