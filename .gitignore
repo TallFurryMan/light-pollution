@@ -35,3 +35,6 @@ node_modules/
 src/ha-config
 src/config
 src/config-seed/.ha_run.lock
+
+# Local jekyll
+.sass-cache/
