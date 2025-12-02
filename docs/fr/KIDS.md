@@ -12,7 +12,7 @@ translation_reference: kids
 * Home Assistant affiche les mesures sur une carte.
 
 ## Étapes rapides en classe
-1. **Assembler** – suivre le schéma de câblage dans `docs/ASSEMBLY.md`.
+1. **Assembler** – suivre le schéma de câblage dans [Assemblage]({{ site.baseurl }}{% link fr/ASSEMBLY.md %}).
 2. **Charger le firmware** – copier `src/firmware/firmware.py` et `src/firmware/lorawan.py` sur le Pico.
 3. **Nommer et localiser** – exécuter `python SETUP.PY <nom> <lat> <lon>` depuis l’ordinateur.
 4. **Déployer** – fixer le capteur dehors; alimentation batterie Li‑Po ou petit panneau solaire via MCP73871 ou TP4056.
