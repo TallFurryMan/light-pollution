@@ -12,7 +12,7 @@ nav_label: "Montage"
 
 Cette page décrit le chemin actuellement cohérent avec le firmware du dépôt : un nœud pré-flashé basé sur Raspberry Pi Pico et radio SX1262 en 868 MHz.
 
-![Schéma du nœud capteur](../images/node-wiring-pico.svg){: .lp-diagram }
+![Schéma du nœud capteur](../images/node-wiring-pico-fr.svg){: .lp-diagram }
 
 ## Référence de câblage
 
@@ -32,7 +32,7 @@ Cette page décrit le chemin actuellement cohérent avec le firmware du dépôt 
 
 ## Chaîne d’alimentation
 
-![Chaîne d’alimentation solaire](../images/power-chain.svg){: .lp-diagram }
+![Chaîne d’alimentation solaire](../images/power-chain-fr.svg){: .lp-diagram }
 
 - Banc de test : alimentation USB du Pico.
 - Version extérieure visée : panneau solaire vers CN3065, puis batterie LiPo, puis nœud basse consommation.

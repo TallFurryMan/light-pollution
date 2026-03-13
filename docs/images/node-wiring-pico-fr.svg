@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 520" role="img" aria-labelledby="title desc">
+  <title id="title">Câblage du nœud Pico</title>
+  <desc id="desc">Câblage de référence du nœud basé sur Pico et du capteur TSL2591.</desc>
+  <style>
+    .bg { fill: #fffdf8; }
+    .board { fill: #ffffff; stroke: #d1c6b5; stroke-width: 2; rx: 20; }
+    .title { font: 700 24px Georgia, serif; fill: #1f2430; }
+    .label { font: 700 18px sans-serif; fill: #1f2430; }
+    .pin { font: 600 14px sans-serif; fill: #1f2430; }
+    .note { font: 14px sans-serif; fill: #4b5563; }
+    .wire3v3 { stroke: #d17b0f; stroke-width: 4; fill: none; }
+    .wiregnd { stroke: #2f3640; stroke-width: 4; fill: none; }
+    .wiresda { stroke: #1565c0; stroke-width: 4; fill: none; }
+    .wirescl { stroke: #0b6e4f; stroke-width: 4; fill: none; }
+  </style>
+  <rect class="bg" width="1080" height="520" rx="24" />
+  <text class="title" x="40" y="42">Câblage actuel du nœud</text>
+  <rect class="board" x="70" y="100" width="430" height="320" />
+  <text class="label" x="100" y="140">Raspberry Pi Pico + carte radio SX1262 868 MHz</text>
+  <text class="pin" x="110" y="190">GP3   CS</text>
+  <text class="pin" x="110" y="220">GP10  SPI1 SCK</text>
+  <text class="pin" x="110" y="250">GP11  SPI1 MOSI</text>
+  <text class="pin" x="110" y="280">GP12  SPI1 MISO</text>
+  <text class="pin" x="110" y="310">GP15  RESET</text>
+  <text class="pin" x="110" y="340">GP20  DIO1</text>
+  <text class="pin" x="320" y="190">3V3</text>
+  <text class="pin" x="320" y="220">GND</text>
+  <text class="pin" x="320" y="250">GP4 SDA</text>
+  <text class="pin" x="320" y="280">GP5 SCL</text>
+  <text class="note" x="100" y="385">Profil par défaut : pico_lora_sx1262_868m</text>
+  <text class="note" x="100" y="410">Fréquence par défaut : 868000000 Hz</text>
+  <rect class="board" x="660" y="140" width="260" height="220" />
+  <text class="label" x="705" y="180">TSL2591X</text>
+  <text class="pin" x="700" y="220">VIN</text>
+  <text class="pin" x="700" y="250">GND</text>
+  <text class="pin" x="700" y="280">SDA</text>
+  <text class="pin" x="700" y="310">SCL</text>
+  <path class="wire3v3" d="M360 184 C520 184 520 220 690 220" />
+  <path class="wiregnd" d="M360 214 C520 214 520 250 690 250" />
+  <path class="wiresda" d="M360 244 C520 244 520 280 690 280" />
+  <path class="wirescl" d="M360 274 C520 274 520 310 690 310" />
+  <text class="note" x="660" y="390">Seul le câblage du capteur est externe ici.</text>
+  <text class="note" x="660" y="412">Les broches SX1262 font partie du profil matériel.</text>
+</svg>

@@ -20,6 +20,24 @@ class ProjectConfigTests(unittest.TestCase):
     def test_docs_root_language_page_exists(self):
         self.assertTrue((REPO_ROOT / "docs" / "index.md").exists())
 
+    def test_french_docs_reference_french_diagrams(self):
+        architecture = (REPO_ROOT / "docs" / "fr" / "ARCHITECTURE.md").read_text()
+        assembly = (REPO_ROOT / "docs" / "fr" / "ASSEMBLY.md").read_text()
+        self.assertIn("classroom-flow-fr.svg", architecture)
+        self.assertIn("software-stack-fr.svg", architecture)
+        self.assertIn("node-wiring-pico-fr.svg", assembly)
+        self.assertIn("power-chain-fr.svg", assembly)
+
+    def test_localized_french_diagrams_exist(self):
+        expected = [
+            "classroom-flow-fr.svg",
+            "software-stack-fr.svg",
+            "node-wiring-pico-fr.svg",
+            "power-chain-fr.svg",
+        ]
+        for name in expected:
+            self.assertTrue((REPO_ROOT / "docs" / "images" / name).exists(), name)
+
 
 if __name__ == "__main__":
     unittest.main()

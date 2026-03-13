@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 280" role="img" aria-labelledby="title desc">
+  <title id="title">Chaîne d'alimentation</title>
+  <desc id="desc">Chaîne de puissance de référence du panneau solaire jusqu'au nœud.</desc>
+  <style>
+    .bg { fill: #fffdf8; }
+    .box { fill: #ffffff; stroke: #d5cab7; stroke-width: 2; rx: 18; }
+    .title { font: 700 24px Georgia, serif; fill: #1f2430; }
+    .label { font: 700 18px sans-serif; fill: #1f2430; }
+    .text { font: 14px sans-serif; fill: #4b5563; }
+    .arrow { stroke: #d17b0f; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#d17b0f" />
+    </marker>
+  </defs>
+  <rect class="bg" width="1100" height="280" rx="24" />
+  <text class="title" x="40" y="42">Chaîne d'alimentation extérieure</text>
+  <rect class="box" x="40" y="100" width="180" height="110" />
+  <text class="label" x="72" y="145">Panneau solaire</text>
+  <text class="text" x="72" y="170">Recharge pendant la journée</text>
+  <rect class="box" x="280" y="100" width="180" height="110" />
+  <text class="label" x="328" y="145">CN3065</text>
+  <text class="text" x="300" y="170">Contrôleur de charge solaire</text>
+  <rect class="box" x="520" y="100" width="180" height="110" />
+  <text class="label" x="575" y="145">LiPo</text>
+  <text class="text" x="548" y="170">Stockage batterie 3,7 V</text>
+  <rect class="box" x="760" y="60" width="280" height="70" />
+  <text class="label" x="790" y="102">Chemin nœud sobre</text>
+  <text class="text" x="790" y="122">Le nœud Pico reste sur la chaîne basse tension</text>
+  <rect class="box" x="760" y="150" width="280" height="70" />
+  <text class="label" x="790" y="192">Chemin Pi Zero 2W</text>
+  <text class="text" x="790" y="212">Ajouter un convertisseur 5 V ou une carte dédiée</text>
+  <path class="arrow" d="M220 155 H270" />
+  <path class="arrow" d="M460 155 H510" />
+  <path class="arrow" d="M700 130 H750" />
+  <path class="arrow" d="M700 190 H750" />
+</svg>

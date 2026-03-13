@@ -12,7 +12,7 @@ nav_label: "Architecture"
 
 ## Vue pédagogique
 
-![Vue d’ensemble de la classe](../images/classroom-flow.svg){: .lp-diagram }
+![Vue d’ensemble de la classe](../images/classroom-flow-fr.svg){: .lp-diagram }
 
 Le principe est simple :
 
@@ -23,7 +23,7 @@ Le principe est simple :
 
 ## Chaîne technique réelle
 
-![Chaîne technique du dépôt](../images/software-stack.svg){: .lp-diagram }
+![Chaîne technique du dépôt](../images/software-stack-fr.svg){: .lp-diagram }
 
 La pile Docker du dépôt comprend :
 
