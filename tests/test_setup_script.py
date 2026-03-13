@@ -19,6 +19,14 @@ class FakeArgs:
         self.charger_type = kwargs.get("charger_type", "CN3065")
         self.poll_interval = kwargs.get("poll_interval", 900)
         self.freq = kwargs.get("freq", 868_000_000)
+        self.protocol = kwargs.get("protocol", "lorawan")
+        self.join_eui = kwargs.get("join_eui", "70B3D57ED005A11A")
+        self.dev_eui = kwargs.get("dev_eui", "0004A30B001C0530")
+        self.app_key = kwargs.get("app_key", "00112233445566778899AABBCCDDEEFF")
+        self.app_port = kwargs.get("app_port", 10)
+        self.lorawan_dr = kwargs.get("lorawan_dr", 5)
+        self.lorawan_join_dr = kwargs.get("lorawan_join_dr", 5)
+        self.lorawan_tx_power = kwargs.get("lorawan_tx_power", 0)
 
 
 class FakeSerial:
@@ -45,9 +53,33 @@ class SetupScriptTests(unittest.TestCase):
     def test_build_config_keeps_classroom_defaults(self):
         cfg = setup_script.build_config(FakeArgs())
         self.assertEqual(cfg["board_profile"], "pico_lora_sx1262_868m")
+        self.assertEqual(cfg["protocol"], "lorawan")
         self.assertEqual(cfg["sensor_type"], "TSL2591")
         self.assertEqual(cfg["charger_type"], "CN3065")
         self.assertEqual(cfg["freq"], 868_000_000)
+        self.assertEqual(cfg["app_port"], 10)
+        self.assertEqual(cfg["join_eui"], "70B3D57ED005A11A")
+
+    def test_build_config_normalises_hex_credentials(self):
+        cfg = setup_script.build_config(
+            FakeArgs(
+                join_eui="70:b3:d5:7e:d0:05:a1:1a",
+                dev_eui="00-04-A3-0B-00-1C-05-30",
+                app_key="0011 2233 4455 6677 8899 aabb ccdd eeff",
+            )
+        )
+        self.assertEqual(cfg["join_eui"], "70B3D57ED005A11A")
+        self.assertEqual(cfg["dev_eui"], "0004A30B001C0530")
+        self.assertEqual(cfg["app_key"], "00112233445566778899AABBCCDDEEFF")
+
+    def test_build_config_requires_lorawan_credentials(self):
+        with self.assertRaises(ValueError):
+            setup_script.build_config(FakeArgs(join_eui=None))
+
+    def test_build_config_allows_raw_protocol_without_otaa_credentials(self):
+        cfg = setup_script.build_config(FakeArgs(protocol="raw", join_eui=None, dev_eui=None, app_key=None))
+        self.assertEqual(cfg["protocol"], "raw")
+        self.assertNotIn("join_eui", cfg)
 
     def test_build_remote_script_embeds_json_safely(self):
         cfg = setup_script.build_config(FakeArgs(friendly_name='node "A"'))

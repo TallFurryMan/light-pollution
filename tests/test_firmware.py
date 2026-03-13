@@ -56,6 +56,7 @@ class FirmwareTests(unittest.TestCase):
             path = td + "/missing.json"
             cfg = firmware.load_config(path)
             self.assertEqual(cfg["name"], "unknown")
+            self.assertEqual(cfg["protocol"], "lorawan")
             self.assertEqual(cfg["poll_interval"], 900)
             self.assertEqual(cfg["board_profile"], "pico_lora_sx1262_868m")
             self.assertEqual(cfg["lora_chip"], "SX1262")
@@ -63,6 +64,8 @@ class FirmwareTests(unittest.TestCase):
             self.assertEqual(cfg["lora_cs"], 3)
             self.assertEqual(cfg["lora_dio1"], 20)
             self.assertEqual(cfg["spi_sck"], 10)
+            self.assertEqual(cfg["app_port"], 10)
+            self.assertEqual(cfg["rx2_frequency"], 869_525_000)
 
     def test_make_payload_uses_defaults_and_charger_status(self):
         charger = FakeCharger("charging")
@@ -110,6 +113,36 @@ class FirmwareTests(unittest.TestCase):
         cfg = {"charger_type": "CN3065"}
         charger = firmware.make_charger(cfg, i2c_cls=FakeI2C)
         self.assertIsInstance(charger, firmware.CN3065)
+
+    def test_make_transport_returns_raw_radio_when_requested(self):
+        raw_radio = object()
+        with mock.patch.object(firmware, "make_lora", return_value=raw_radio):
+            transport = firmware.make_transport({"protocol": "raw"})
+        self.assertIs(transport, raw_radio)
+
+    def test_make_transport_requires_lorawan_credentials(self):
+        radio = object()
+        with mock.patch.object(firmware, "make_lora", return_value=radio):
+            with self.assertRaises(RuntimeError):
+                firmware.make_transport({"protocol": "lorawan", "lora_chip": "SX1262"})
+
+    def test_make_transport_builds_lorawan_node(self):
+        radio = object()
+        cfg = {
+            "protocol": "lorawan",
+            "lora_chip": "SX1262",
+            "join_eui": "70B3D57ED005A11A",
+            "dev_eui": "0004A30B001C0530",
+            "app_key": "00112233445566778899AABBCCDDEEFF",
+            "app_port": 10,
+        }
+        with mock.patch.object(firmware, "make_lora", return_value=radio):
+            with mock.patch("lorawan.LoRaWANNode", return_value="node") as node_cls:
+                transport = firmware.make_transport(cfg)
+        self.assertEqual(transport, "node")
+        self.assertEqual(node_cls.call_args.kwargs["join_eui"], cfg["join_eui"])
+        self.assertEqual(node_cls.call_args.kwargs["dev_eui"], cfg["dev_eui"])
+        self.assertEqual(node_cls.call_args.kwargs["app_key"], cfg["app_key"])
 
 
 if __name__ == "__main__":

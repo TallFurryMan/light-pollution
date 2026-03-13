@@ -59,5 +59,6 @@ nav_label: "Home"
 
 <div class="lp-note">
   <p><strong>Implemented path today:</strong> a Pico-based pre-flashed node with an SX1262 radio in EU868 and a TSL2591 sensor.</p>
-  <p><strong>Next hardware path:</strong> a Raspberry Pi host with the SX1303 868 MHz gateway hat, plus an experimental Pi Zero 2W node variant. Full protocol alignment with the ChirpStack server path is still the next technical milestone, along with proper 5 V power regulation for the Pi Zero 2W variant.</p>
+  <p><strong>Implemented protocol today:</strong> the Pico firmware now joins ChirpStack over OTAA LoRaWAN and sends classroom measurements as encrypted application payloads.</p>
+  <p><strong>Next hardware path:</strong> a Raspberry Pi host with the SX1303 868 MHz gateway hat, plus an experimental Pi Zero 2W node variant with proper regulated 5 V power.</p>
 </div>

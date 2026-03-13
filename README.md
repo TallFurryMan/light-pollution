@@ -12,7 +12,8 @@ This repository supports a classroom activity for French middle-school students 
 
 - Current implemented node path: Raspberry Pi Pico + SX1262 + TSL2591, prepared as a pre-flashed classroom kit.
 - Current server stack target: ChirpStack, Mosquitto MQTT, Home Assistant, InfluxDB, Redis, Postgres, and a gateway bridge.
-- Current protocol boundary: the Pico firmware remains the reference node implementation, while full end-to-end LoRaWAN alignment with ChirpStack is the next protocol milestone.
+- Current protocol status: the Pico reference firmware now joins ChirpStack over LoRaWAN OTAA and sends classroom measurements as encrypted application payloads.
+- Current boundary: the Pi Zero 2W node variant remains a future hardware path and still needs its own power and software adaptation.
 - Current documentation target: a clearer GitHub Pages site with separate student and teacher paths.
 
 ## Main files
@@ -22,7 +23,7 @@ This repository supports a classroom activity for French middle-school students 
 | `src/docker-compose.yml` | Classroom stack with ChirpStack, MQTT, Home Assistant, and InfluxDB. |
 | `src/configuration.yaml` | Home Assistant configuration, including the InfluxDB 2.x exporter settings. |
 | `src/firmware/firmware.py` | MicroPython node firmware for the current Pico-based reference path. |
-| `src/firmware/lorawan.py` | Low-level radio helpers used by the current firmware. |
+| `src/firmware/lorawan.py` | SX1262 radio driver plus the node-side LoRaWAN Class A implementation used by the Pico firmware. |
 | `SETUP.PY` | Teacher provisioning tool for pre-flashed nodes. |
 | `docs/` | GitHub Pages content in French and English. |
 
@@ -42,17 +43,19 @@ Main endpoints:
 ## Provisioning a classroom node
 
 ```bash
-python3 SETUP.PY school-yard-01 48.2167 -1.6986 --port /dev/ttyACM0
+python3 SETUP.PY school-yard-01 48.2167 -1.6986 --port /dev/ttyACM0 \
+  --join-eui 70B3D57ED005A11A --dev-eui 0004A30B001C0530 \
+  --app-key 00112233445566778899AABBCCDDEEFF
 ```
 
-Use `--dry-run` first if you want to inspect the generated `config.json` payload without writing it over serial.
+Use `--dry-run` first if you want to inspect the generated `config.json` payload without writing it over serial. Pass `--protocol raw` only if you explicitly want to bypass the built-in LoRaWAN OTAA path.
 
 ## Tests
 
 Unit tests:
 
 ```bash
-python3 -m unittest tests.test_firmware tests.test_lorawan tests.test_project_config tests.test_setup_script
+python3 -m unittest tests.test_crypto_utils tests.test_firmware tests.test_lorawan tests.test_project_config tests.test_setup_script
 ```
 
 Stack-dependent tests:

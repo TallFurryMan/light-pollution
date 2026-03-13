@@ -59,7 +59,8 @@ nav_label: "Accueil"
 
 <div class="lp-note">
   <p><strong>Chemin implémenté aujourd’hui :</strong> nœud capteur basé sur un Raspberry Pi Pico avec radio SX1262 en 868 MHz, capteur TSL2591 et kit pré-configuré.</p>
-  <p><strong>Chemin matériel suivant :</strong> passerelle Raspberry Pi 4/5 ou LattePanda v1 avec HAT SX1303 868 MHz, et expérimentation d’un nœud Pi Zero 2W. L’alignement protocolaire complet avec ChirpStack reste la prochaine étape technique, en plus d’une alimentation 5 V adaptée pour la variante Pi Zero 2W.</p>
+  <p><strong>Chemin protocolaire implémenté aujourd’hui :</strong> le firmware Pico rejoint maintenant ChirpStack en LoRaWAN OTAA et envoie les mesures chiffrées comme charges utiles applicatives.</p>
+  <p><strong>Chemin matériel suivant :</strong> passerelle Raspberry Pi 4/5 ou LattePanda v1 avec HAT SX1303 868 MHz, et expérimentation d’un nœud Pi Zero 2W avec une alimentation 5 V adaptée.</p>
 </div>
 
 ## Livrables utiles

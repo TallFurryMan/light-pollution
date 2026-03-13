@@ -56,6 +56,6 @@ The Docker stack in this repository contains:
 ## Known boundary
 
 <div class="lp-note">
-  <p>The repository has been cleaned up around the current Pico-based node path. The Pi Zero 2W plus SX1262 hat variant is documented as a future hardware option, but it is not yet delivered as a ready-to-run node implementation.</p>
-  <p>Full protocol alignment between the node firmware and the ChirpStack/LoRaWAN server path is still the next technical milestone.</p>
+  <p>The Pico node firmware now implements OTAA LoRaWAN on the node side and aligns with the ChirpStack server path shipped in this repository.</p>
+  <p>The Pi Zero 2W plus SX1262 hat variant remains a future hardware option and still needs its own software adaptation plus regulated 5 V power.</p>
 </div>

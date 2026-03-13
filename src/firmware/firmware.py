@@ -36,6 +36,7 @@ BOARD_PROFILES = {
 }
 DEFAULT_CONFIG = {
     "board_profile": "pico_lora_sx1262_868m",
+    "protocol": "lorawan",
     "name": "unknown",
     "lat": 0.0,
     "lon": 0.0,
@@ -58,6 +59,19 @@ DEFAULT_CONFIG = {
     "sensor_sda": 4,
     "sensor_adc_pin": 2,
     "battery_adc_pin": 26,
+    "join_eui": "",
+    "dev_eui": "",
+    "app_key": "",
+    "app_port": 10,
+    "lorawan_dr": 5,
+    "lorawan_join_dr": 5,
+    "lorawan_tx_power": 0,
+    "session_path": "lorawan-session.json",
+    "adr": True,
+    "rx1_delay": 1,
+    "rx1_dr_offset": 0,
+    "rx2_data_rate": 0,
+    "rx2_frequency": 869_525_000,
 }
 
 _sleep_ms = getattr(time, "sleep_ms", lambda ms: time.sleep(ms / 1000))
@@ -208,6 +222,39 @@ def make_lora(cfg, spi=None, pin_cls=Pin, lora_cls=LoRa):
     return lora_cls(spi, cs=cs, rst=rst, dio0=dio0, chip=lora_chip, freq=cfg.get("freq"))
 
 
+def make_transport(cfg, spi=None, pin_cls=Pin, lora_cls=LoRa):
+    protocol = str(cfg.get("protocol", DEFAULT_CONFIG["protocol"])).lower()
+    radio = make_lora(cfg, spi=spi, pin_cls=pin_cls, lora_cls=lora_cls)
+    if protocol in ("raw", "lora"):
+        return radio
+    if protocol != "lorawan":
+        raise RuntimeError("Unsupported radio protocol: %s" % protocol)
+    if str(cfg.get("lora_chip", DEFAULT_CONFIG["lora_chip"])).upper() != "SX1262":
+        raise RuntimeError("The built-in LoRaWAN path currently supports the SX1262 classroom node profile")
+    required = ("join_eui", "dev_eui", "app_key")
+    missing = [field for field in required if not cfg.get(field)]
+    if missing:
+        raise RuntimeError("Missing LoRaWAN credentials: %s" % ", ".join(missing))
+    from lorawan import LoRaWANNode  # late import to keep the raw path lightweight
+
+    return LoRaWANNode(
+        radio,
+        dev_eui=cfg["dev_eui"],
+        join_eui=cfg["join_eui"],
+        app_key=cfg["app_key"],
+        app_port=cfg.get("app_port", DEFAULT_CONFIG["app_port"]),
+        session_path=cfg.get("session_path", DEFAULT_CONFIG["session_path"]),
+        data_rate=cfg.get("lorawan_dr", DEFAULT_CONFIG["lorawan_dr"]),
+        join_data_rate=cfg.get("lorawan_join_dr", DEFAULT_CONFIG["lorawan_join_dr"]),
+        tx_power_index=cfg.get("lorawan_tx_power", DEFAULT_CONFIG["lorawan_tx_power"]),
+        adr=cfg.get("adr", DEFAULT_CONFIG["adr"]),
+        rx1_delay=cfg.get("rx1_delay", DEFAULT_CONFIG["rx1_delay"]),
+        rx1_dr_offset=cfg.get("rx1_dr_offset", DEFAULT_CONFIG["rx1_dr_offset"]),
+        rx2_data_rate=cfg.get("rx2_data_rate", DEFAULT_CONFIG["rx2_data_rate"]),
+        rx2_frequency=cfg.get("rx2_frequency", DEFAULT_CONFIG["rx2_frequency"]),
+    )
+
+
 def make_payload(cfg, lux, charger, now_fn=None):
     now_fn = now_fn or (lambda: int(time.time()))
     lat = cfg.get("lat", DEFAULT_CONFIG["lat"])
@@ -229,13 +276,13 @@ def main(loop_once=False, sleep_fn=time.sleep, now_fn=None):
     cfg = load_config()
     sensor = make_sensor(cfg)
     charger = make_charger(cfg)
-    lora = make_lora(cfg)
+    transport = make_transport(cfg)
     interval = cfg.get("poll_interval", DEFAULT_CONFIG["poll_interval"])
 
     while True:
         lux_val = sensor.read_lux()
         payload = make_payload(cfg, lux_val, charger, now_fn=now_fn)
-        lora.send(ujson.dumps(payload).encode())
+        transport.send(ujson.dumps(payload).encode())
         if loop_once:
             break
         sleep_fn(interval)

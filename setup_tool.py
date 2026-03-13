@@ -10,6 +10,8 @@ DEFAULT_BOARD_PROFILE = "pico_lora_sx1262_868m"
 DEFAULT_SENSOR = "TSL2591"
 DEFAULT_CHARGER = "CN3065"
 DEFAULT_POLL_INTERVAL = 900
+DEFAULT_PROTOCOL = "lorawan"
+DEFAULT_APP_PORT = 10
 
 
 def fallback_port():
@@ -80,6 +82,39 @@ def parse_args(argv=None):
         help="Radio frequency in Hz",
     )
     parser.add_argument(
+        "--protocol",
+        choices=("lorawan", "raw"),
+        default=DEFAULT_PROTOCOL,
+        help="Node radio protocol",
+    )
+    parser.add_argument("--join-eui", help="JoinEUI / AppEUI as 16 hex characters")
+    parser.add_argument("--dev-eui", help="DevEUI as 16 hex characters")
+    parser.add_argument("--app-key", help="AppKey as 32 hex characters")
+    parser.add_argument(
+        "--app-port",
+        type=int,
+        default=DEFAULT_APP_PORT,
+        help="Application port used by LoRaWAN uplinks",
+    )
+    parser.add_argument(
+        "--lorawan-dr",
+        type=int,
+        default=5,
+        help="EU868 data rate used after join",
+    )
+    parser.add_argument(
+        "--lorawan-join-dr",
+        type=int,
+        default=5,
+        help="EU868 data rate used for OTAA joins",
+    )
+    parser.add_argument(
+        "--lorawan-tx-power",
+        type=int,
+        default=0,
+        help="LoRaWAN TX power index (EU868 defaults to 0 = max power)",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Print the config.json payload without opening the serial port",
@@ -87,9 +122,19 @@ def parse_args(argv=None):
     return parser.parse_args(argv)
 
 
+def normalise_hex(value, expected_length, field_name):
+    if value is None:
+        return ""
+    cleaned = str(value).replace(" ", "").replace("-", "").replace(":", "").upper()
+    if len(cleaned) != expected_length or any(char not in "0123456789ABCDEF" for char in cleaned):
+        raise ValueError(f"{field_name} must contain exactly {expected_length} hexadecimal characters")
+    return cleaned
+
+
 def build_config(args):
-    return {
+    config = {
         "board_profile": args.board_profile,
+        "protocol": args.protocol,
         "name": args.friendly_name,
         "lat": args.latitude,
         "lon": args.longitude,
@@ -97,7 +142,19 @@ def build_config(args):
         "charger_type": args.charger_type,
         "poll_interval": args.poll_interval,
         "freq": args.freq,
+        "app_port": args.app_port,
+        "lorawan_dr": args.lorawan_dr,
+        "lorawan_join_dr": args.lorawan_join_dr,
+        "lorawan_tx_power": args.lorawan_tx_power,
     }
+    if args.protocol == "lorawan":
+        config["join_eui"] = normalise_hex(args.join_eui, 16, "join_eui")
+        config["dev_eui"] = normalise_hex(args.dev_eui, 16, "dev_eui")
+        config["app_key"] = normalise_hex(args.app_key, 32, "app_key")
+        missing = [field for field in ("join_eui", "dev_eui", "app_key") if not config[field]]
+        if missing:
+            raise ValueError("Missing LoRaWAN credentials: %s" % ", ".join(missing))
+    return config
 
 
 def build_remote_script(cfg):
@@ -136,7 +193,11 @@ def provision_device(ser, script):
 
 def main(argv=None):
     args = parse_args(argv)
-    cfg = build_config(args)
+    try:
+        cfg = build_config(args)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
 
     if args.dry_run:
         print(json.dumps(cfg, indent=2, sort_keys=True))

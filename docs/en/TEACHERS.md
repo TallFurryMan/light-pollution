@@ -28,7 +28,9 @@ nav_label: "Teachers"
 ## Provision a pre-flashed kit
 
 ```bash
-python3 SETUP.PY school-yard-01 48.2167 -1.6986 --port /dev/ttyACM0
+python3 SETUP.PY school-yard-01 48.2167 -1.6986 --port /dev/ttyACM0 \
+  --join-eui 70B3D57ED005A11A --dev-eui 0004A30B001C0530 \
+  --app-key 00112233445566778899AABBCCDDEEFF
 ```
 
 The script writes `config.json` to the node and stores:
@@ -36,9 +38,11 @@ The script writes `config.json` to the node and stores:
 - the kit name
 - latitude and longitude
 - the board profile
+- the radio protocol
 - the sensor type
 - the charger type
 - the measurement interval
+- the node LoRaWAN OTAA credentials
 
 Use `--dry-run` to inspect the payload before writing it.
 
@@ -54,5 +58,5 @@ Use `--dry-run` to inspect the payload before writing it.
 
 <div class="lp-note">
   <p>The SX1262 HAT plus a Pi Zero 2W is a good future direction, but that node path is not yet implemented in this repository.</p>
-  <p>It also still needs both a node-side software path aligned with ChirpStack/LoRaWAN and regulated 5 V power. A CN3065 board and a single LiPo cell are not enough on their own for a Pi Zero 2W node.</p>
+  <p>It still needs its own software adaptation and regulated 5 V power. A CN3065 board and a single LiPo cell are not enough on their own for a Pi Zero 2W node.</p>
 </div>

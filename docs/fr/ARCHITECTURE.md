@@ -56,6 +56,6 @@ La pile Docker du dépôt comprend :
 ## Limite connue assumée
 
 <div class="lp-note">
-  <p>Le dépôt a été nettoyé pour être cohérent avec le kit Pico actuel. La variante Pi Zero 2W avec HAT SX1262 est documentée comme évolution matérielle, mais pas encore fournie comme implémentation de nœud prête à l’emploi.</p>
-  <p>L’alignement complet entre le firmware de nœud et la chaîne ChirpStack/LoRaWAN reste la prochaine étape protocolaire du projet.</p>
+  <p>Le firmware du nœud Pico prend désormais en charge le LoRaWAN OTAA côté nœud et s’aligne avec la chaîne ChirpStack du dépôt.</p>
+  <p>La variante Pi Zero 2W avec HAT SX1262 reste une évolution matérielle future : elle demandera une adaptation logicielle spécifique et une alimentation 5 V régulée.</p>
 </div>

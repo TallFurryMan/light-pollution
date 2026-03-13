@@ -30,7 +30,9 @@ nav_label: "Enseignants"
 Exemple :
 
 ```bash
-python3 SETUP.PY college-cour-01 48.2167 -1.6986 --port /dev/ttyACM0
+python3 SETUP.PY college-cour-01 48.2167 -1.6986 --port /dev/ttyACM0 \
+  --join-eui 70B3D57ED005A11A --dev-eui 0004A30B001C0530 \
+  --app-key 00112233445566778899AABBCCDDEEFF
 ```
 
 Ce script écrit `config.json` sur le nœud et stocke :
@@ -38,9 +40,11 @@ Ce script écrit `config.json` sur le nœud et stocke :
 - le nom du kit
 - la latitude et la longitude
 - le profil matériel du nœud
+- le protocole radio utilisé
 - le type de capteur
 - le type de chargeur
 - l’intervalle de mesure
+- les identifiants LoRaWAN OTAA du kit
 
 Utiliser `--dry-run` pour vérifier le contenu avant écriture.
 
@@ -62,7 +66,7 @@ Utiliser `--dry-run` pour vérifier le contenu avant écriture.
 
 <div class="lp-note">
   <p>Le HAT SX1262 pour Raspberry Pi et le Pi Zero 2W constituent une piste intéressante, mais ce chemin n’est pas encore implémenté dans le dépôt.</p>
-  <p>En plus du service logiciel côté nœud et de l’alignement avec ChirpStack/LoRaWAN, il faut prévoir une alimentation 5 V régulée : la carte CN3065 charge une LiPo, elle ne suffit pas seule pour alimenter un Pi Zero 2W.</p>
+  <p>Il faut encore prévoir une adaptation logicielle propre à cette variante et une alimentation 5 V régulée : la carte CN3065 charge une LiPo, elle ne suffit pas seule pour alimenter un Pi Zero 2W.</p>
 </div>
 
 ## Préparer la passerelle
