@@ -1,0 +1,133 @@
+:root {
+  --lp-ink: #1f2430;
+  --lp-accent: #0b6e4f;
+  --lp-accent-2: #d17b0f;
+  --lp-wash: #f6f4ee;
+  --lp-card: #fffdf8;
+  --lp-border: #d9d3c4;
+}
+
+body {
+  background:
+    radial-gradient(circle at top right, rgba(209, 123, 15, 0.12), transparent 32%),
+    linear-gradient(180deg, #f7f3e8 0%, #fbfaf7 18rem);
+  color: var(--lp-ink);
+}
+
+.page {
+  max-width: 1200px;
+}
+
+.page__content h1,
+.page__content h2,
+.page__content h3 {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.lp-hero {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  margin: 1.5rem 0 2rem;
+  padding: 1.75rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, rgba(11, 110, 79, 0.1), rgba(209, 123, 15, 0.08));
+}
+
+.lp-eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--lp-accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.lp-button {
+  display: inline-block;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: var(--lp-accent);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.lp-button:hover,
+.lp-button:focus {
+  color: #fff;
+  text-decoration: none;
+  filter: brightness(1.05);
+}
+
+.lp-button--secondary {
+  background: var(--lp-accent-2);
+}
+
+.lp-panel,
+.lp-card,
+.lp-note {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 1rem;
+  background: var(--lp-card);
+}
+
+.lp-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  margin: 1.25rem 0 2rem;
+}
+
+.lp-card h3,
+.lp-panel h3 {
+  margin-top: 0;
+}
+
+.lp-card p:last-child,
+.lp-panel p:last-child,
+.lp-note p:last-child {
+  margin-bottom: 0;
+}
+
+.lp-language-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  margin-top: 1.5rem;
+}
+
+.lp-language-card {
+  padding: 1.25rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 1rem;
+  background: var(--lp-card);
+}
+
+.lp-language-card a {
+  text-decoration: none;
+}
+
+.lp-diagram {
+  display: block;
+  width: 100%;
+  margin: 1rem 0 1.5rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 1rem;
+  background: #fff;
+}
+
+@media (max-width: 800px) {
+  .lp-hero {
+    grid-template-columns: 1fr;
+  }
+}

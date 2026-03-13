@@ -1,6 +1,7 @@
-title: "Light Pollution Docs"
+title: "Light Pollution Workshop"
 baseurl: "/light-pollution"
 url: "https://tallfurryman.github.io"
+repository_url: "https://github.com/TallFurryMan/light-pollution"
 
 remote_theme: academicpages/academicpages.github.io
 
@@ -15,7 +16,7 @@ defaults:
       path: ""
     values:
       layout: single
-      author_profile: true
+      author_profile: false
   - scope:
       path: "en"
       type: en
@@ -40,7 +41,7 @@ author:
   bio: "Development Operations by day, Independent Entrepreneur in astronomy by night. Contributor to INDI and KDE KStars. Physicial/digital games."
 
 breadcrumbs:
-  enabled: true
+  enabled: false
 
 permalink: /:collection/:path/
 

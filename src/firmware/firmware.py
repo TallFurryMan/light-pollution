@@ -15,19 +15,49 @@ except ImportError:  # Allows importing in CPython tests
 from lorawan import LoRa
 
 CONFIG_PATH = "config.json"
+BOARD_PROFILES = {
+    "pico_lora_sx1262_868m": {
+        "lora_chip": "SX1262",
+        "freq": 868_000_000,
+        "spi_id": 1,
+        "spi_sck": 10,
+        "spi_mosi": 11,
+        "spi_miso": 12,
+        "lora_cs": 3,
+        "lora_rst": 15,
+        "lora_busy": 2,
+        "lora_dio1": 20,
+        "sensor_i2c_id": 0,
+        "sensor_scl": 5,
+        "sensor_sda": 4,
+        "sensor_adc_pin": 2,
+        "battery_adc_pin": 26,
+    },
+}
 DEFAULT_CONFIG = {
+    "board_profile": "pico_lora_sx1262_868m",
     "name": "unknown",
     "lat": 0.0,
     "lon": 0.0,
     "sensor_type": "TSL2591",
-    "charger_type": "none",
+    "charger_type": "CN3065",
     "poll_interval": 900,
-    "lora_chip": "RFM95",
-    "lora_cs": 18,
-    "lora_rst": 10,
-    "lora_dio0": 18,
-    "lora_busy": 16,
-    "lora_dio1": 17,
+    "lora_chip": "SX1262",
+    "freq": 868_000_000,
+    "spi_id": 1,
+    "spi_sck": 10,
+    "spi_mosi": 11,
+    "spi_miso": 12,
+    "lora_cs": 3,
+    "lora_rst": 15,
+    "lora_dio0": 20,
+    "lora_busy": 2,
+    "lora_dio1": 20,
+    "sensor_i2c_id": 0,
+    "sensor_scl": 5,
+    "sensor_sda": 4,
+    "sensor_adc_pin": 2,
+    "battery_adc_pin": 26,
 }
 
 _sleep_ms = getattr(time, "sleep_ms", lambda ms: time.sleep(ms / 1000))
@@ -41,6 +71,8 @@ def load_config(path: str = CONFIG_PATH):
     except (OSError, ValueError):
         cfg = {}
     merged = DEFAULT_CONFIG.copy()
+    profile = cfg.get("board_profile", merged["board_profile"])
+    merged.update(BOARD_PROFILES.get(profile, {}))
     merged.update(cfg)
     return merged
 
@@ -117,16 +149,28 @@ class TP4056(BaseCharger):
         return "charging"
 
 
+class CN3065(BaseCharger):
+    pass
+
+
 def make_sensor(cfg, i2c_cls=I2C, adc_cls=ADC, pin_cls=Pin):
     sensor_type = cfg.get("sensor_type", DEFAULT_CONFIG["sensor_type"])
     if sensor_type in ("TSL2591", "BH1750"):
         if i2c_cls is None or pin_cls is None:
             raise RuntimeError("I2C sensor requested but machine.I2C is missing")
-        sensor_i2c = i2c_cls(0, scl=pin_cls(5), sda=pin_cls(4))
+        sensor_i2c = i2c_cls(
+            cfg.get("sensor_i2c_id", 0),
+            scl=pin_cls(cfg.get("sensor_scl", 5)),
+            sda=pin_cls(cfg.get("sensor_sda", 4)),
+        )
         if sensor_type == "TSL2591":
             return TSL2591(sensor_i2c)
         return BH1750(sensor_i2c)
-    return TEMT6000(adc_cls=adc_cls, pin_cls=pin_cls)
+    return TEMT6000(
+        pin_no=cfg.get("sensor_adc_pin", 2),
+        adc_cls=adc_cls,
+        pin_cls=pin_cls,
+    )
 
 
 def make_charger(cfg, i2c_cls=I2C):
@@ -137,13 +181,21 @@ def make_charger(cfg, i2c_cls=I2C):
         return MCP73871(i2c_cls(1))
     if charger_type == "TP4056":
         return TP4056()
+    if charger_type == "CN3065":
+        return CN3065()
     return BaseCharger()
 
 
 def make_lora(cfg, spi=None, pin_cls=Pin, lora_cls=LoRa):
     if pin_cls is None or (spi is None and SPI is None):
         raise RuntimeError("LoRa requires machine.SPI and machine.Pin")
-    spi = spi or SPI(0, baudrate=5_000_000, sck=pin_cls(13), mosi=pin_cls(15), miso=pin_cls(14))
+    spi = spi or SPI(
+        cfg.get("spi_id", 0),
+        baudrate=5_000_000,
+        sck=pin_cls(cfg.get("spi_sck", 13)),
+        mosi=pin_cls(cfg.get("spi_mosi", 15)),
+        miso=pin_cls(cfg.get("spi_miso", 14)),
+    )
     lora_chip = cfg.get("lora_chip", DEFAULT_CONFIG["lora_chip"])
     cs = cfg.get("lora_cs", DEFAULT_CONFIG["lora_cs"])
     rst = cfg.get("lora_rst", DEFAULT_CONFIG["lora_rst"])

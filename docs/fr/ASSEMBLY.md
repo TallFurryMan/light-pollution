@@ -4,34 +4,43 @@ layout: single
 title: "Montage"
 permalink: /fr/assembly
 translation_reference: assembly
+nav_order: 5
+nav_label: "Montage"
 ---
-## 1. Préparer la breadboard
-1. Insérer le **Raspberry Pi Pico**.
-2. Relier **GND** au rail de masse, **3.3 V** au rail positif.
 
-## 2. Câblage des capteurs de lumière
-Choisir selon la sensibilité voulue.
+# Montage du nœud capteur actuel
 
-### 2.1 TEMT6000 (analogique)
-- OUT → **GP2** (ADC0), VCC 3.3 V, GND commun.
-- Condensateur 10 µF entre VCC et GND conseillé.
+Cette page décrit le chemin actuellement cohérent avec le firmware du dépôt : un nœud pré-flashé basé sur Raspberry Pi Pico et radio SX1262 en 868 MHz.
 
-### 2.2 TSL2591 (I²C)
-- SCL → **GP5**, SDA → **GP4**, VCC 3.3 V, GND commun.
-- Adresse par défaut 0x29.
+![Schéma du nœud capteur](../images/node-wiring-pico.svg){: .lp-diagram }
 
-### 2.3 BH1750 (I²C)
-- SCL → **GP5**, SDA → **GP4**, VCC 3.3 V, GND commun.
-- Adresse par défaut 0x23.
+## Référence de câblage
 
-## 3. Module LoRa
-- SPI0 : SCK GP13, MOSI GP15, MISO GP14.
-- CS/NSS : GP18 (par défaut).
-- DIO0 (IRQ) : GP18 ou autre selon module.
-- RESET : GP10 (optionnel).
-- Découplage 100 nF près du module.
+### Bus radio SX1262
 
-## 4. Alimentation
-- Batterie Li‑Po 4.2 V + chargeur (MCP73871 ou TP4056).
-- Régulateur 3.3 V vers rails du Pico et des capteurs.
-- Vérifier 3.3 V au multimètre.
+- Profil par défaut : `pico_lora_sx1262_868m`
+- SPI1 : `GP10` SCK, `GP11` MOSI, `GP12` MISO
+- Contrôle radio : `GP3` CS, `GP15` RESET, `GP2` BUSY, `GP20` DIO1
+- Fréquence par défaut : `868000000`
+
+### Capteur TSL2591X
+
+- `3V3` vers `VIN`
+- `GND` vers `GND`
+- `GP4` vers `SDA`
+- `GP5` vers `SCL`
+
+## Chaîne d’alimentation
+
+![Chaîne d’alimentation solaire](../images/power-chain.svg){: .lp-diagram }
+
+- Banc de test : alimentation USB du Pico.
+- Version extérieure visée : panneau solaire vers CN3065, puis batterie LiPo, puis nœud basse consommation.
+- Si la prochaine variante Pi Zero 2W est retenue, ajouter un convertisseur 5 V régulé entre la batterie et le calculateur.
+
+## Pourquoi ce montage est privilégié
+
+- Le dépôt contient déjà le firmware correspondant.
+- Le profil radio est maintenant cohérent avec EU868.
+- Le TSL2591X est simple à câbler en I²C.
+- Les kits peuvent être pré-flashés puis confiés rapidement aux élèves.

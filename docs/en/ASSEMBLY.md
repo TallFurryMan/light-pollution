@@ -4,33 +4,36 @@ layout: single
 title: "Assembly"
 permalink: /en/assembly
 translation_reference: assembly
+nav_order: 5
+nav_label: "Assembly"
 ---
-## 1. Prep the breadboard
-1. Insert **Raspberry Pi Pico**.
-2. GND to ground rail, 3.3 V to positive rail.
 
-## 2. Light sensor wiring
-Pick the sensor you need.
+# Current Sensor Node Assembly
 
-### TEMT6000 (analog)
-- OUT → **GP2** (ADC0), VCC 3.3 V, GND.
-- Add 10 µF cap between VCC/GND near the sensor.
+This page describes the path that is coherent with the firmware in this repository today: a pre-flashed sensor node based on Raspberry Pi Pico and an SX1262 radio in EU868.
 
-### TSL2591 (I²C)
-- SCL → **GP5**, SDA → **GP4**, VCC 3.3 V, GND.
-- Address 0x29 by default.
+![Sensor node wiring](../images/node-wiring-pico.svg){: .lp-diagram }
 
-### BH1750 (I²C)
-- SCL → **GP5**, SDA → **GP4**, VCC 3.3 V, GND.
-- Address 0x23 by default.
+## Wiring reference
 
-## 3. LoRa module
-- SPI0: SCK GP13, MOSI GP15, MISO GP14.
-- CS/NSS: GP18 (default).
-- DIO0 IRQ: GP18 (or per module).
-- RESET: GP10 optional.
-- Decouple VCC with 100 nF near the module.
+### SX1262 radio bus
 
-## 4. Power
-- Li‑Po + charger (MCP73871/TP4056), regulator 3.3 V to Pico/sensors.
-- Verify 3.3 V before connecting.
+- Default profile: `pico_lora_sx1262_868m`
+- SPI1: `GP10` SCK, `GP11` MOSI, `GP12` MISO
+- Radio control: `GP3` CS, `GP15` RESET, `GP2` BUSY, `GP20` DIO1
+- Default frequency: `868000000`
+
+### TSL2591X sensor
+
+- `3V3` to `VIN`
+- `GND` to `GND`
+- `GP4` to `SDA`
+- `GP5` to `SCL`
+
+## Power chain
+
+![Solar power chain](../images/power-chain.svg){: .lp-diagram }
+
+- Bench tests: USB power on the Pico.
+- Outdoor target: solar panel into CN3065, then LiPo battery, then the low-power node.
+- If the future Pi Zero 2W node is adopted, add a regulated 5 V converter between the battery and the computer.

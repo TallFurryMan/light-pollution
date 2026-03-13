@@ -1,44 +1,61 @@
 ---
 lang: fr
 layout: single
-title: "Architecture du système"
+title: "Architecture"
 permalink: /fr/architecture
 translation_reference: architecture
+nav_order: 6
+nav_label: "Architecture"
 ---
-## 1. Vue d’ensemble
 
-**Diagramme**
+# Architecture du projet
 
-Le projet comporte trois couches :
+## Vue pédagogique
 
-| Couche | Composants | Liaison | Rôle |
-|-------|------------|---------|------|
-| **Capteur** | Raspberry Pi Pico, LoRa SX1262, capteur de lumière TSL2591, batterie Li‑Po | LoRa | Mesure locale et émission à faible consommation |
-| **Passerelle** | Raspberry Pi avec conteneurs **LoRa‑to‑MQTT** et Mosquitto | LoRa ➜ MQTT | Pont entre capteur et serveur |
-| **Serveur** | Conteneur Home Assistant (+ InfluxDB) | MQTT | Stockage, traitement et visualisation |
+![Vue d’ensemble de la classe](../images/classroom-flow.svg){: .lp-diagram }
 
-## 2. Chaîne côté capteur
-1. Le Pico lit le nom et les coordonnées depuis `config.json`.
-2. Toutes les **15 minutes**, un relevé de lux est effectué.
-3. Format : `{"name":"unit‑1","latitude":48.2167,"longitude":-1.6986,"lux":120,"ts":1690000000}`.
-4. Le message est envoyé via LoRa.
+Le principe est simple :
 
-## 3. Passerelle & serveur
-- **Passerelle LoRa‑MQTT** : écoute le module LoRa et publie les messages JSON sur Mosquitto.
-- **Home Assistant** : souscrit aux topics MQTT, crée les entités via la découverte, et affiche les capteurs sur la carte.
-- **InfluxDB** : reçoit l’historique complet via l’intégration `influxdb2`.
+1. Un nœud capteur mesure la lumière.
+2. La radio envoie la mesure vers la passerelle.
+3. La passerelle publie les données dans la pile logicielle.
+4. Home Assistant affiche la carte et InfluxDB garde l’historique.
 
-## 4. Modèle de données
+## Chaîne technique réelle
+
+![Chaîne technique du dépôt](../images/software-stack.svg){: .lp-diagram }
+
+La pile Docker du dépôt comprend :
+
+- ChirpStack pour la couche réseau radio.
+- Mosquitto pour le transport MQTT.
+- Home Assistant pour l’affichage et l’exploitation pédagogique.
+- InfluxDB pour conserver l’historique complet.
+
+## Modèle de données utile en classe
+
 ```json
 {
-  "name": "string",
+  "name": "college-cour-01",
   "latitude": 48.2167,
   "longitude": -1.6986,
   "lux": 123,
-  "ts": 1690000000
+  "ts": 1690000000,
+  "charger_type": "CN3065",
+  "charger_status": "unknown"
 }
 ```
 
-## 5. Fiabilité
-- Trames LoRa vérifiées par CRC.
-- La configuration minimale est conservée en flash pour redémarrer sans intervention.
+## Choix de référence après révision
+
+- Une seule bande radio par défaut : EU868.
+- Un seul capteur mis en avant : TSL2591X.
+- Un seul chemin simple pour les élèves : kits pré-flashés.
+- Une seule passerelle recommandée : machine hôte + HAT SX1303 868 MHz.
+
+## Limite connue assumée
+
+<div class="lp-note">
+  <p>Le dépôt a été nettoyé pour être cohérent avec le kit Pico actuel. La variante Pi Zero 2W avec HAT SX1262 est documentée comme évolution matérielle, mais pas encore fournie comme implémentation de nœud prête à l’emploi.</p>
+  <p>L’alignement complet entre le firmware de nœud et la chaîne ChirpStack/LoRaWAN reste la prochaine étape protocolaire du projet.</p>
+</div>

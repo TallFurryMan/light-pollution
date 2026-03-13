@@ -1,64 +1,63 @@
-## Server‑Side Setup
+# Light Pollution Workshop
+
+[French workshop docs](https://tallfurryman.github.io/light-pollution/fr/) | [English technical docs](https://tallfurryman.github.io/light-pollution/en/) | [GitHub Pages workflow](https://github.com/tallfurryman/light-pollution/actions/workflows/gh-pages.yml)
 
 [![Stack Tests](https://github.com/tallfurryman/light-pollution/actions/workflows/stack-tests.yml/badge.svg)](https://github.com/tallfurryman/light-pollution/actions/workflows/stack-tests.yml)
 [![Latest Release](https://img.shields.io/github/v/release/tallfurryman/light-pollution?include_prereleases&label=latest%20release)](https://github.com/tallfurryman/light-pollution/releases)
 [![Docs](https://github.com/tallfurryman/light-pollution/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/tallfurryman/light-pollution/actions/workflows/gh-pages.yml)
 
-The repository includes a `docker-compose.yml` that runs Home Assistant,
-Mosquitto MQTT, the LoRa gateway and an **InfluxDB** instance.  The
-InfluxDB service stores every measurement that Home Assistant pushes
-via the `influxdb2` integration, so you get unlimited‑sized history
-instead of the 24‑hour retention Home Assistant uses by default.
+This repository supports a classroom activity for French middle-school students around light pollution, environmental sensing, and map-based interpretation of data.
 
-### File layout
+## Current scope
+
+- Current implemented node path: Raspberry Pi Pico + SX1262 + TSL2591, prepared as a pre-flashed classroom kit.
+- Current server stack target: ChirpStack, Mosquitto MQTT, Home Assistant, InfluxDB, Redis, Postgres, and a gateway bridge.
+- Current protocol boundary: the Pico firmware remains the reference node implementation, while full end-to-end LoRaWAN alignment with ChirpStack is the next protocol milestone.
+- Current documentation target: a clearer GitHub Pages site with separate student and teacher paths.
+
+## Main files
 
 | File | Purpose |
 |------|---------|
-| `src/docker-compose.yml` | Pulls the four services.
-| `src/configuration.yaml` | Minimal Home Assistant config with InfluxDB integration.
-| `src/config` | Folder mapping for Home Assistant's data.  Add your custom
-  config files here.
+| `src/docker-compose.yml` | Classroom stack with ChirpStack, MQTT, Home Assistant, and InfluxDB. |
+| `src/configuration.yaml` | Home Assistant configuration, including the InfluxDB 2.x exporter settings. |
+| `src/firmware/firmware.py` | MicroPython node firmware for the current Pico-based reference path. |
+| `src/firmware/lorawan.py` | Low-level radio helpers used by the current firmware. |
+| `SETUP.PY` | Teacher provisioning tool for pre-flashed nodes. |
+| `docs/` | GitHub Pages content in French and English. |
 
-### What you need to do
+## Running the stack
 
-1. Copy or create the `config` directory next to the compose file.
-2. Add any custom Home Assistant integration config you want.
-3. Start the stack: `docker compose -f src/docker-compose.yml up -d`.
-   InfluxDB exposes port `8086` and is pre-wired in `src/configuration.yaml`
-   via the `influxdb2` integration (no UI configuration needed).
-4. Open Home Assistant at `http://localhost:8123` and complete the
-   onboarding. The InfluxDB integration will be active automatically,
-   writing to the `homeassistant` bucket on `influxdb:8086`.
+```bash
+docker compose -f src/docker-compose.yml up -d
+```
 
-The configuration file is designed to work out‑of‑the‑box with the
-included `src/configuration.yaml`.
+Main endpoints:
 
-### Accessing Home Assistant
+- Home Assistant: `http://localhost:8123`
+- InfluxDB: `http://localhost:8086`
+- ChirpStack UI: `http://localhost:8087`
+- MQTT broker: `tcp://localhost:1883`
 
-After the stack is up, open `http://localhost:8123` in your browser (or
-the host IP if running on another machine). The initial Home Assistant
-onboarding will prompt for a user; complete that and then add the
-InfluxDB integration pointing at `http://influxdb:8086`. Mosquitto is
-exposed on `tcp://localhost:1883` for local testing and ChirpStack’s UI
-is available on `http://localhost:8087`.
+## Provisioning a classroom node
 
-### Default credentials (seeded for tests)
-- Home Assistant: `admin` / `adminpw123`
+```bash
+python3 SETUP.PY school-yard-01 48.2167 -1.6986 --port /dev/ttyACM0
+```
 
-### Running tests inside the stack
+Use `--dry-run` first if you want to inspect the generated `config.json` payload without writing it over serial.
 
-An optional `test_runner` container (Python 3.10) is included. To run
-the tests against the live stack:
+## Tests
+
+Unit tests:
+
+```bash
+python3 -m unittest tests.test_firmware tests.test_lorawan tests.test_project_config tests.test_setup_script
+```
+
+Stack-dependent tests:
 
 ```bash
 docker compose -f src/docker-compose.yml up -d
 docker compose -f src/docker-compose.yml run --rm test_runner sh -c "pip install -q -r tests/requirements.txt && python -m unittest discover -s tests"
 ```
-
-The repository is mounted at `/workspace` inside the test container so
-artifacts and results are available on the host.
-
-### Documentation
-- English docs live in `docs/`.
-- French quickstart for students: `docs/fr/KIDS.md`.
-- GitHub Pages publishes the `docs` folder via the `Deploy Docs` workflow.

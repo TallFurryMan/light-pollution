@@ -1,4 +1,11 @@
 {% include base_path %}
+{% assign current_lang = page.lang | default: site.language_default %}
+{% assign nav_pages = site.pages | where: "lang", current_lang | where_exp: "item", "item.nav_order" | sort: "nav_order" %}
+{% assign translated_page = nil %}
+{% if page.translation_reference %}
+  {% assign translated_matches = site.pages | where: "translation_reference", page.translation_reference | where_exp: "item", "item.lang != current_lang" %}
+  {% assign translated_page = translated_matches | first %}
+{% endif %}
 
 <div class="masthead">
   <div class="masthead__inner-wrap">
@@ -7,16 +14,21 @@
         <button><span class="navicon"></span></button>
         <ul class="visible-links">
           <li class="masthead__menu-item masthead__menu-item--lg persist"><a href="{{ base_path }}/">{{ site.title }}</a></li>
-          {% assign pages = site.pages | where: "lang", page.lang %}
-          {% for p in pages %}
-          <li class="masthead__menu-item"><a href="{{ base_path }}{{ p.url }}">{{ p.title | split: " " | first }}</a></li>
-          {% endfor %}
-          {% if page.lang == "fr" %}
-            {% assign target = page.permalink | replace: "/fr/", "/en/" %}
-            <li class="masthead__menu-item"><a href="{{ base_path }}{{ target }}">🇬🇧</a></li>
-          {% elsif page.lang == "en" %}
-            {% assign target = page.permalink | replace: "/en/", "/fr/" %}
-            <li class="masthead__menu-item"><a href="{{ base_path }}{{ target }}">🇫🇷</a></li>
+          {% unless page.url == "/" %}
+            {% for p in nav_pages %}
+              <li class="masthead__menu-item"><a href="{{ base_path }}{{ p.url }}">{{ p.nav_label | default: p.title }}</a></li>
+            {% endfor %}
+          {% else %}
+            <li class="masthead__menu-item"><a href="{{ base_path }}/fr/">Français</a></li>
+            <li class="masthead__menu-item"><a href="{{ base_path }}/en/">English</a></li>
+          {% endunless %}
+          <li class="masthead__menu-item"><a href="{{ site.repository_url }}">GitHub</a></li>
+          {% if translated_page %}
+            {% if current_lang == "fr" %}
+              <li class="masthead__menu-item"><a href="{{ base_path }}{{ translated_page.url }}">English</a></li>
+            {% else %}
+              <li class="masthead__menu-item"><a href="{{ base_path }}{{ translated_page.url }}">Français</a></li>
+            {% endif %}
           {% endif %}
           <li id="theme-toggle" class="masthead__menu-item persist tail">
             <a role="button" aria-labelledby="theme-icon"><i id="theme-icon" class="fa-solid fa-sun" aria-hidden="true" title="toggle theme"></i></a>

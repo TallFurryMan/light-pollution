@@ -9,16 +9,20 @@ homeassistant:
   longitude: -1.6962403
   elevation: 0
   unit_system: metric
-  time_zone: UTC
+  time_zone: Europe/Paris
   country: FR
 
-# InfluxDB integration (assuming the container name is 'influxdb')
-influxdb2:
-  url: http://influxdb:8086
+# InfluxDB 2.x history exporter.
+#
+# Home Assistant imports this YAML configuration as a config entry at startup,
+# which keeps the classroom stack ready without extra UI setup.
+influxdb:
+  api_version: 2
+  ssl: false
+  host: influxdb
+  port: 8086
   token: "ha-dev-token"
   organization: "homeassistant"
   bucket: "homeassistant"
-  auth_type: "none"
 
-mqtt:
-  # MQTT connection is preseeded via core.config_entries; no YAML options needed.
+# MQTT is preseeded via core.config_entries in src/config-seed.

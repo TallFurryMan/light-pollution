@@ -79,7 +79,7 @@ class LoRa:
         self._write(0x0E, bytearray([0x00]))
         self._write(0x0F, bytearray([0x00]))
 
-    def send(self, payload):
+    def send(self, payload, timeout_ms=5000):
         """Send a payload (up to 255 bytes) over LoRa.
         It blocks until the transmission is finished.
         """
@@ -90,8 +90,12 @@ class LoRa:
         self._write(0x00, payload)            # FIFO
         self._write(0x22, bytearray([length]))
         self._write(0x01, bytearray([0x83]))  # LoRa TX mode
+        waited_ms = 0
         while not self.dio0.value():
             _sleep_ms(1)
+            waited_ms += 1
+            if waited_ms >= timeout_ms:
+                raise TimeoutError("SX127x transmit did not complete")
         self._write(0x12, bytearray([0xFF]))  # Clear IRQs
         _sleep_ms(10)
 
@@ -141,6 +145,7 @@ class SX1262LoRa:
     def _configure(self):
         self._write_cmd(0x80, b"\x00")  # Standby RC
         self._write_cmd(0x96, b"\x00")  # LDO regulator
+        self._write_cmd(0x9D, b"\x01")  # Let DIO2 drive the RF switch when available
         self._set_rf_frequency(self.freq)
         # Modulation params: SF7 BW125 CR4/5 LDRO off
         self._write_cmd(0x8B, b"\x07\x04\x01\x00")
@@ -149,7 +154,7 @@ class SX1262LoRa:
         # Buffer bases (TX=0, RX=0)
         self._write_cmd(0x8F, b"\x00\x00")
 
-    def send(self, payload):
+    def send(self, payload, timeout_ms=5000):
         if len(payload) > 255:
             raise ValueError("payload too large")
         # Write payload to buffer at offset 0
@@ -160,5 +165,9 @@ class SX1262LoRa:
         self._write_cmd(0x8E, bytes([self.power, 0x04]))
         # SetTx with timeout = 0 (single shot)
         self._write_cmd(0x83, b"\x00\x00\x00")
+        waited_ms = 0
         while not self.dio1.value():
             _sleep_ms(1)
+            waited_ms += 1
+            if waited_ms >= timeout_ms:
+                raise TimeoutError("SX1262 transmit did not complete")

@@ -1,0 +1,75 @@
+---
+lang: fr
+layout: single
+title: "Enseignants"
+permalink: /fr/teachers
+translation_reference: teachers
+nav_order: 3
+nav_label: "Enseignants"
+---
+
+# Guide enseignant
+
+## Kit de référence pour l’atelier
+
+- Nœud actuel du dépôt : Raspberry Pi Pico + radio SX1262 868 MHz + capteur TSL2591 + kit pré-flashé.
+- Capteur de lumière visé : TSL2591X en I²C.
+- Alimentation visée : batterie LiPo 3,7 V + chargeur solaire CN3065.
+- Passerelle visée : Raspberry Pi 4/5 ou LattePanda v1 + HAT SX1303 868 MHz.
+
+## Avant la séance
+
+1. Monter ou préparer les kits.
+2. Vérifier qu’un kit publie bien une mesure de test.
+3. Pré-configurer le nom et la position avec `SETUP.PY`.
+4. Préparer une carte des lieux d’observation autour de l’établissement.
+5. Décider combien de groupes comparent des zones sombres, éclairées, mixtes.
+
+## Provisionner un kit pré-flashé
+
+Exemple :
+
+```bash
+python3 SETUP.PY college-cour-01 48.2167 -1.6986 --port /dev/ttyACM0
+```
+
+Ce script écrit `config.json` sur le nœud et stocke :
+
+- le nom du kit
+- la latitude et la longitude
+- le profil matériel du nœud
+- le type de capteur
+- le type de chargeur
+- l’intervalle de mesure
+
+Utiliser `--dry-run` pour vérifier le contenu avant écriture.
+
+## Pendant la séance
+
+1. Distribuer les kits et rappeler les règles de sécurité.
+2. Associer chaque groupe à un lieu précis.
+3. Laisser les élèves installer puis observer la carte.
+4. Demander une hypothèse avant d’annoncer les résultats des autres groupes.
+5. Faire un retour collectif sur les effets de la lumière nocturne.
+
+## Après la séance
+
+- Exporter quelques mesures marquantes.
+- Comparer les lieux les plus lumineux et les plus sombres.
+- Discuter des compromis entre sécurité, confort et sobriété lumineuse.
+
+## Point important sur la prochaine variante Pi Zero 2W
+
+<div class="lp-note">
+  <p>Le HAT SX1262 pour Raspberry Pi et le Pi Zero 2W constituent une piste intéressante, mais ce chemin n’est pas encore implémenté dans le dépôt.</p>
+  <p>En plus du service logiciel côté nœud et de l’alignement avec ChirpStack/LoRaWAN, il faut prévoir une alimentation 5 V régulée : la carte CN3065 charge une LiPo, elle ne suffit pas seule pour alimenter un Pi Zero 2W.</p>
+</div>
+
+## Préparer la passerelle
+
+- Installer le HAT SX1303 868 MHz sur la machine hôte.
+- Démarrer la pile Docker du dépôt.
+- Vérifier l’accès à Home Assistant, ChirpStack et InfluxDB.
+- Confirmer que le projet utilise bien la bande EU868.
+
+Le détail de la chaîne logicielle est dans [Architecture]({{ site.baseurl }}{% link fr/ARCHITECTURE.md %}).

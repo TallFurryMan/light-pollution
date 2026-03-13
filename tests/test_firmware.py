@@ -57,6 +57,12 @@ class FirmwareTests(unittest.TestCase):
             cfg = firmware.load_config(path)
             self.assertEqual(cfg["name"], "unknown")
             self.assertEqual(cfg["poll_interval"], 900)
+            self.assertEqual(cfg["board_profile"], "pico_lora_sx1262_868m")
+            self.assertEqual(cfg["lora_chip"], "SX1262")
+            self.assertEqual(cfg["freq"], 868_000_000)
+            self.assertEqual(cfg["lora_cs"], 3)
+            self.assertEqual(cfg["lora_dio1"], 20)
+            self.assertEqual(cfg["spi_sck"], 10)
 
     def test_make_payload_uses_defaults_and_charger_status(self):
         charger = FakeCharger("charging")
@@ -99,6 +105,11 @@ class FirmwareTests(unittest.TestCase):
         cfg = {"charger_type": "none"}
         charger = firmware.make_charger(cfg, i2c_cls=FakeI2C)
         self.assertIsInstance(charger, firmware.BaseCharger)
+
+    def test_make_charger_supports_cn3065_profile(self):
+        cfg = {"charger_type": "CN3065"}
+        charger = firmware.make_charger(cfg, i2c_cls=FakeI2C)
+        self.assertIsInstance(charger, firmware.CN3065)
 
 
 if __name__ == "__main__":
