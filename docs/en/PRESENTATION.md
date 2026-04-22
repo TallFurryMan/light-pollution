@@ -49,6 +49,11 @@ nav_label: "Home"
     <p><a href="{{ site.baseurl }}{% link en/HARDWARE.md %}">View hardware</a></p>
   </div>
   <div class="lp-card">
+    <h3>Gateway</h3>
+    <p>Bring up the Raspberry Pi SX1303 host path, point the forwarder at UDP 1700, and validate the real radio chain.</p>
+    <p><a href="{{ site.baseurl }}{% link en/GATEWAY.md %}">Validate the gateway</a></p>
+  </div>
+  <div class="lp-card">
     <h3>Architecture</h3>
     <p>Understand the current radio, ChirpStack, MQTT, Home Assistant, and InfluxDB flow.</p>
     <p><a href="{{ site.baseurl }}{% link en/ARCHITECTURE.md %}">View architecture</a></p>
@@ -61,4 +66,5 @@ nav_label: "Home"
   <p><strong>Implemented path today:</strong> a Pico-based pre-flashed node with an SX1262 radio in EU868 and a TSL2591 sensor.</p>
   <p><strong>Implemented protocol today:</strong> the Pico firmware now joins ChirpStack over OTAA LoRaWAN and sends classroom measurements as encrypted application payloads.</p>
   <p><strong>Next hardware path:</strong> a Raspberry Pi host with the SX1303 868 MHz gateway hat, plus an experimental Pi Zero 2W node variant with proper regulated 5 V power.</p>
+  <p><strong>Real gateway note:</strong> the repository stack already exposes `chirpstack-gateway-bridge`, but the Raspberry Pi still needs a host-side packet forwarder to make the SX1303 hat visible to ChirpStack.</p>
 </div>

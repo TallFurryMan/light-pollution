@@ -49,6 +49,11 @@ nav_label: "Accueil"
     <p><a href="{{ site.baseurl }}{% link fr/HARDWARE.md %}">Voir le matériel</a></p>
   </div>
   <div class="lp-card">
+    <h3>Passerelle</h3>
+    <p>Mettre en service le Raspberry Pi avec HAT SX1303, viser l’UDP 1700 et valider la vraie chaîne radio.</p>
+    <p><a href="{{ site.baseurl }}{% link fr/GATEWAY.md %}">Valider la passerelle</a></p>
+  </div>
+  <div class="lp-card">
     <h3>Architecture</h3>
     <p>Comprendre la chaîne radio, ChirpStack, MQTT, Home Assistant et InfluxDB.</p>
     <p><a href="{{ site.baseurl }}{% link fr/ARCHITECTURE.md %}">Voir l’architecture</a></p>
@@ -61,6 +66,7 @@ nav_label: "Accueil"
   <p><strong>Chemin implémenté aujourd’hui :</strong> nœud capteur basé sur un Raspberry Pi Pico avec radio SX1262 en 868 MHz, capteur TSL2591 et kit pré-configuré.</p>
   <p><strong>Chemin protocolaire implémenté aujourd’hui :</strong> le firmware Pico rejoint maintenant ChirpStack en LoRaWAN OTAA et envoie les mesures chiffrées comme charges utiles applicatives.</p>
   <p><strong>Chemin matériel suivant :</strong> passerelle Raspberry Pi 4/5 ou LattePanda v1 avec HAT SX1303 868 MHz, et expérimentation d’un nœud Pi Zero 2W avec une alimentation 5 V adaptée.</p>
+  <p><strong>Note passerelle réelle :</strong> la pile du dépôt expose déjà `chirpstack-gateway-bridge`, mais le Raspberry Pi a encore besoin d’un packet forwarder côté hôte pour rendre le HAT SX1303 visible dans ChirpStack.</p>
 </div>
 
 ## Livrables utiles

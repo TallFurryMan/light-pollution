@@ -36,6 +36,7 @@ nav_label: "Hardware"
 - The TSL2591X is the main classroom light sensor.
 - The CN3065 plus LiPo path is the intended solar charging chain for low-power nodes.
 - The Pi Zero 2W variant is treated as a future hardware path, not as a claimed ready-made implementation.
+- The SX1303 gateway is a real Raspberry Pi host path, but it still needs a host-side packet forwarder outside Docker.
 
 ## Power warning
 
@@ -43,3 +44,5 @@ nav_label: "Hardware"
   <p>A Pico-based node fits a simpler low-power chain than a Pi Zero 2W.</p>
   <p>A Pi Zero 2W needs regulated 5 V. A 3.7 V LiPo and a CN3065 charger are not enough by themselves; a boost stage or a dedicated power board is required.</p>
 </div>
+
+For the Raspberry Pi gateway bring-up and validation sequence, use the [Gateway guide]({{ site.baseurl }}{% link en/GATEWAY.md %}).

@@ -1,3 +1,4 @@
+import json
 import pathlib
 import unittest
 
@@ -19,6 +20,23 @@ class ProjectConfigTests(unittest.TestCase):
 
     def test_docs_root_language_page_exists(self):
         self.assertTrue((REPO_ROOT / "docs" / "index.md").exists())
+
+    def test_gateway_docs_exist_in_both_languages(self):
+        self.assertTrue((REPO_ROOT / "docs" / "en" / "GATEWAY.md").exists())
+        self.assertTrue((REPO_ROOT / "docs" / "fr" / "GATEWAY.md").exists())
+
+    def test_gateway_forwarder_example_is_valid_json(self):
+        path = REPO_ROOT / "src" / "gateway" / "semtech-udp" / "local_conf.json.example"
+        content = json.loads(path.read_text())
+        gateway_conf = content["gateway_conf"]
+        self.assertEqual(gateway_conf["server_address"], "127.0.0.1")
+        self.assertEqual(gateway_conf["serv_port_up"], 1700)
+        self.assertEqual(gateway_conf["serv_port_down"], 1700)
+
+    def test_readme_links_to_gateway_docs(self):
+        content = (REPO_ROOT / "README.md").read_text()
+        self.assertIn("/light-pollution/fr/gateway/", content)
+        self.assertIn("/light-pollution/en/gateway/", content)
 
     def test_french_docs_reference_french_diagrams(self):
         architecture = (REPO_ROOT / "docs" / "fr" / "ARCHITECTURE.md").read_text()

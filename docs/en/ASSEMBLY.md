@@ -4,7 +4,7 @@ layout: single
 title: "Assembly"
 permalink: /en/assembly
 translation_reference: assembly
-nav_order: 5
+nav_order: 6
 nav_label: "Assembly"
 ---
 

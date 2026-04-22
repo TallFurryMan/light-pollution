@@ -24,6 +24,7 @@ nav_label: "Teachers"
 3. Pre-configure name and coordinates with `SETUP.PY`.
 4. Prepare a map of observation locations around the school.
 5. Decide which groups compare dark, bright, and mixed locations.
+6. Validate the Raspberry Pi gateway path with the SX1303 hat before students arrive.
 
 ## Provision a pre-flashed kit
 
@@ -60,3 +61,13 @@ Use `--dry-run` to inspect the payload before writing it.
   <p>The SX1262 HAT plus a Pi Zero 2W is a good future direction, but that node path is not yet implemented in this repository.</p>
   <p>It still needs its own software adaptation and regulated 5 V power. A CN3065 board and a single LiPo cell are not enough on their own for a Pi Zero 2W node.</p>
 </div>
+
+## Validate the gateway before class
+
+- Start the Docker stack from the repository.
+- Confirm that `chirpstack-gateway-bridge` is already listening on UDP `1700`.
+- Run the SX1303 packet forwarder on the Raspberry Pi host.
+- Register the gateway EUI in ChirpStack and wait for the gateway to become visible.
+- Only then test a node join and a real uplink.
+
+The full Raspberry Pi checklist is in the [Gateway guide]({{ site.baseurl }}{% link en/GATEWAY.md %}).

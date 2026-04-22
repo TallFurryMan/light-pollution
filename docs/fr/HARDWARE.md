@@ -36,6 +36,7 @@ nav_label: "Matériel"
 - Le capteur de lumière de référence devient le TSL2591X.
 - Le couple solaire CN3065 + LiPo devient la chaîne d’alimentation visée pour les nœuds basse consommation.
 - La variante Pi Zero 2W est signalée comme évolution matérielle, pas comme chemin déjà implémenté.
+- La passerelle SX1303 est bien un chemin matériel réel, mais elle a encore besoin d’un packet forwarder sur l’hôte, en dehors de Docker.
 
 ## Attention à l’alimentation
 
@@ -43,6 +44,8 @@ nav_label: "Matériel"
   <p>Le Raspberry Pi Pico peut fonctionner dans une chaîne basse consommation plus simple qu’un Pi Zero 2W.</p>
   <p>Le Pi Zero 2W demande une alimentation 5 V régulée. Une LiPo 3,7 V et une carte CN3065 ne suffisent pas seules : il faut ajouter un étage d’élévation ou une carte d’alimentation adaptée.</p>
 </div>
+
+Pour la procédure de mise en service et de validation de la passerelle Raspberry Pi, suivre le [guide passerelle]({{ site.baseurl }}{% link fr/GATEWAY.md %}).
 
 ## Images utiles
 

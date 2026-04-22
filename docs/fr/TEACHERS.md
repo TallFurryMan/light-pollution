@@ -24,6 +24,7 @@ nav_label: "Enseignants"
 3. Pré-configurer le nom et la position avec `SETUP.PY`.
 4. Préparer une carte des lieux d’observation autour de l’établissement.
 5. Décider combien de groupes comparent des zones sombres, éclairées, mixtes.
+6. Valider le chemin passerelle Raspberry Pi + HAT SX1303 avant l’arrivée des élèves.
 
 ## Provisionner un kit pré-flashé
 
@@ -76,4 +77,12 @@ Utiliser `--dry-run` pour vérifier le contenu avant écriture.
 - Vérifier l’accès à Home Assistant, ChirpStack et InfluxDB.
 - Confirmer que le projet utilise bien la bande EU868.
 
-Le détail de la chaîne logicielle est dans [Architecture]({{ site.baseurl }}{% link fr/ARCHITECTURE.md %}).
+## Valider la passerelle avant la séance
+
+- Démarrer la pile Docker du dépôt.
+- Vérifier que `chirpstack-gateway-bridge` écoute déjà sur l’UDP `1700`.
+- Lancer le packet forwarder SX1303 sur l’hôte Raspberry Pi.
+- Déclarer l’EUI de la passerelle dans ChirpStack et attendre qu’elle apparaisse.
+- Tester ensuite seulement le join d’un nœud et un uplink réel.
+
+Le détail de la mise en service réelle est dans le [guide passerelle]({{ site.baseurl }}{% link fr/GATEWAY.md %}).

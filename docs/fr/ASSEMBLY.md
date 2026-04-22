@@ -4,7 +4,7 @@ layout: single
 title: "Montage"
 permalink: /fr/assembly
 translation_reference: assembly
-nav_order: 5
+nav_order: 6
 nav_label: "Montage"
 ---
 
