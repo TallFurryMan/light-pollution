@@ -72,10 +72,33 @@ sudo apt update
 sudo apt install -y git build-essential
 git clone https://github.com/Lora-net/sx1302_hal.git
 cd sx1302_hal
+sed -i "s/^TARGET_USR *=.*/TARGET_USR = ${USER}/" target.cfg
 make clean all
-cp tools/reset_lgw.sh util_chip_id/
-cp tools/reset_lgw.sh packet_forwarder/
 ```
+
+Notes:
+
+- Upstream Semtech asks you to edit `target.cfg` before install operations. Replacing `TARGET_USR` early is harmless and avoids the common `pi` username mismatch on newer Raspberry Pi OS images.
+- On Raspberry Pi OS Trixie, the stock `tools/reset_lgw.sh` is no longer a safe default because it still uses the obsolete `/sys/class/gpio` interface.
+
+### 2.b Replace the reset helper on Raspberry Pi OS Bookworm / Trixie
+
+The repository ships a Raspberry Pi specific reset helper at `src/gateway/semtech-udp/reset_lgw.sh`.
+
+Copy it over the Semtech helper before running `chip_id` or `lora_pkt_fwd`:
+
+```bash
+export WORKSHOP_REPO="$HOME/light-pollution"
+cp "$WORKSHOP_REPO/src/gateway/semtech-udp/reset_lgw.sh" util_chip_id/
+cp "$WORKSHOP_REPO/src/gateway/semtech-udp/reset_lgw.sh" packet_forwarder/
+chmod +x util_chip_id/reset_lgw.sh packet_forwarder/reset_lgw.sh
+```
+
+Why this matters:
+
+- Semtech's current helper still expects `/sys/class/gpio`.
+- Raspberry Pi OS moved away from the old sysfs GPIO interface on recent kernels.
+- The replacement script in this repository uses `pinctrl`, which is the Raspberry Pi OS-native path for this use case.
 
 ### 3. Retrieve the gateway EUI
 
@@ -172,9 +195,12 @@ Check:
 
 - SPI is enabled
 - the reset script is present next to the binary
+- on Raspberry Pi OS Bookworm / Trixie, that reset script should be the repository version, not the stock Semtech sysfs script
 - the hat is seated correctly
 - the antenna is connected
 - you are using a configuration intended for an SX1250-based EU868 gateway
+
+If you see errors mentioning `/sys/class/gpio`, the problem is usually not a missing package. It means the old reset helper is using a GPIO interface that recent Raspberry Pi kernels no longer expose in the same way.
 
 ### The packet forwarder runs but ChirpStack never sees the gateway
 

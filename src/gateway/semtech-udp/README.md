@@ -13,3 +13,8 @@ What you must replace before use:
 
 The repository stack expects the forwarder to send Semtech UDP traffic to
 `chirpstack-gateway-bridge` on UDP port `1700`.
+
+For Raspberry Pi OS Bookworm / Trixie, use the `reset_lgw.sh` shipped in this
+directory instead of the upstream Semtech helper. The upstream helper still
+targets the obsolete sysfs GPIO interface, while this repository variant uses
+`pinctrl`, which matches current Raspberry Pi OS behavior.

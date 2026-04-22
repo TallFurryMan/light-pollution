@@ -72,10 +72,33 @@ sudo apt update
 sudo apt install -y git build-essential
 git clone https://github.com/Lora-net/sx1302_hal.git
 cd sx1302_hal
+sed -i "s/^TARGET_USR *=.*/TARGET_USR = ${USER}/" target.cfg
 make clean all
-cp tools/reset_lgw.sh util_chip_id/
-cp tools/reset_lgw.sh packet_forwarder/
 ```
+
+Notes :
+
+- Semtech demande de modifier `target.cfg` avant les opérations d’installation. Remplacer `TARGET_USR` dès maintenant est sans danger et évite le cas fréquent où l’utilisateur réel n’est plus `pi` sur les images récentes de Raspberry Pi OS.
+- Sous Raspberry Pi OS Trixie, le `tools/reset_lgw.sh` fourni par Semtech n’est plus un bon défaut car il utilise encore l’interface GPIO obsolète `/sys/class/gpio`.
+
+### 2.b Remplacer le helper de reset sous Raspberry Pi OS Bookworm / Trixie
+
+Le dépôt fournit un helper de reset spécifique Raspberry Pi dans `src/gateway/semtech-udp/reset_lgw.sh`.
+
+Le copier à la place du helper Semtech avant de lancer `chip_id` ou `lora_pkt_fwd` :
+
+```bash
+export WORKSHOP_REPO="$HOME/light-pollution"
+cp "$WORKSHOP_REPO/src/gateway/semtech-udp/reset_lgw.sh" util_chip_id/
+cp "$WORKSHOP_REPO/src/gateway/semtech-udp/reset_lgw.sh" packet_forwarder/
+chmod +x util_chip_id/reset_lgw.sh packet_forwarder/reset_lgw.sh
+```
+
+Pourquoi :
+
+- le helper Semtech actuel attend encore `/sys/class/gpio`
+- Raspberry Pi OS s’éloigne de cette interface sysfs sur les noyaux récents
+- le script de remplacement du dépôt utilise `pinctrl`, qui correspond au chemin natif Raspberry Pi OS pour ce cas
 
 ### 3. Récupérer l’EUI de la passerelle
 
@@ -172,9 +195,12 @@ Vérifier :
 
 - le SPI est activé
 - le script de reset est présent à côté du binaire
+- sous Raspberry Pi OS Bookworm / Trixie, ce script doit être la version du dépôt, pas le script Semtech basé sur sysfs
 - le HAT est bien enfiché
 - l’antenne est branchée
 - la configuration utilisée correspond bien à une passerelle SX1250 en EU868
+
+Si des erreurs mentionnent `/sys/class/gpio`, le problème n’est généralement pas un paquet manquant. Cela signifie surtout que l’ancien helper de reset s’appuie sur une interface GPIO que les noyaux Raspberry Pi récents n’exposent plus de la même manière.
 
 ### Le packet forwarder tourne mais ChirpStack ne voit jamais la passerelle
 

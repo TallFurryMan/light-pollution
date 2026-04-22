@@ -1,5 +1,6 @@
 import json
 import pathlib
+import subprocess
 import unittest
 
 
@@ -33,10 +34,24 @@ class ProjectConfigTests(unittest.TestCase):
         self.assertEqual(gateway_conf["serv_port_up"], 1700)
         self.assertEqual(gateway_conf["serv_port_down"], 1700)
 
+    def test_gateway_reset_helper_exists_and_is_shell_valid(self):
+        path = REPO_ROOT / "src" / "gateway" / "semtech-udp" / "reset_lgw.sh"
+        self.assertTrue(path.exists())
+        subprocess.run(["/bin/sh", "-n", str(path)], check=True)
+
     def test_readme_links_to_gateway_docs(self):
         content = (REPO_ROOT / "README.md").read_text()
         self.assertIn("/light-pollution/fr/gateway/", content)
         self.assertIn("/light-pollution/en/gateway/", content)
+
+    def test_gateway_docs_cover_target_cfg_and_pinctrl_reset_script(self):
+        english = (REPO_ROOT / "docs" / "en" / "GATEWAY.md").read_text()
+        french = (REPO_ROOT / "docs" / "fr" / "GATEWAY.md").read_text()
+        for content in (english, french):
+            self.assertIn("target.cfg", content)
+            self.assertIn("TARGET_USR", content)
+            self.assertIn("pinctrl", content)
+            self.assertIn("reset_lgw.sh", content)
 
     def test_french_docs_reference_french_diagrams(self):
         architecture = (REPO_ROOT / "docs" / "fr" / "ARCHITECTURE.md").read_text()
