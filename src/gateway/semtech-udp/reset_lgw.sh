@@ -15,6 +15,14 @@ WAIT_GPIO() {
     sleep 0.1
 }
 
+WAIT_POWER_DOWN() {
+    sleep 0.3
+}
+
+WAIT_POWER_UP() {
+    sleep 0.3
+}
+
 require_pinctrl() {
     if ! command -v pinctrl >/dev/null 2>&1; then
         echo "ERROR: pinctrl not found. On Raspberry Pi OS Bookworm/Trixie it should be available." >&2
@@ -40,8 +48,14 @@ reset() {
     echo "CoreCell power enable through GPIO${SX1302_POWER_EN_PIN}..."
     echo "CoreCell ADC reset through GPIO${AD5338R_RESET_PIN}..."
 
+    # Force a real power cycle first. This avoids the "first run works, second
+    # run returns 0x05" pattern seen when the concentrator stays half-alive
+    # across successive tool invocations.
+    set_output_low "${SX1302_POWER_EN_PIN}"
+    WAIT_POWER_DOWN
+
     set_output_high "${SX1302_POWER_EN_PIN}"
-    WAIT_GPIO
+    WAIT_POWER_UP
 
     set_output_high "${SX1302_RESET_PIN}"
     WAIT_GPIO
@@ -61,6 +75,8 @@ reset() {
 
 term() {
     echo "GPIO term"
+    set_output_low "${SX1302_POWER_EN_PIN}"
+    WAIT_POWER_DOWN
     release_pin "${SX1302_RESET_PIN}"
     release_pin "${SX1302_POWER_EN_PIN}"
     release_pin "${SX1261_RESET_PIN}"

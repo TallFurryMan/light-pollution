@@ -52,6 +52,8 @@ class ProjectConfigTests(unittest.TestCase):
             self.assertIn("TARGET_USR", content)
             self.assertIn("pinctrl", content)
             self.assertIn("reset_lgw.sh", content)
+            self.assertIn("global_conf.json.sx1250.EU868", content)
+            self.assertIn("local_conf.json", content)
 
     def test_french_docs_reference_french_diagrams(self):
         architecture = (REPO_ROOT / "docs" / "fr" / "ARCHITECTURE.md").read_text()

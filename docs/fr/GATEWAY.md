@@ -113,7 +113,14 @@ Conserver cet EUI. Il faudra le reprendre à l’identique lors de la création 
 
 ## Configurer le forwarder pour ce dépôt
 
-Conserver les paramètres radio EU868 propres à la carte dans l’exemple Waveshare ou Semtech correspondant à une passerelle SX1250 / SX1303. Ajouter ensuite une petite surcharge locale pour l’adresse du serveur.
+Partir du profil radio SX1250 EU868 fourni par `sx1302_hal`, puis ajouter une petite surcharge locale pour l’adresse du serveur.
+
+Préparation typique dans `packet_forwarder/` :
+
+```bash
+cp global_conf.json.sx1250.EU868 global_conf.json
+cp "$WORKSHOP_REPO/src/gateway/semtech-udp/local_conf.json.example" local_conf.json
+```
 
 Un exemple est fourni dans `src/gateway/semtech-udp/local_conf.json.example`.
 
@@ -132,6 +139,7 @@ Surcharge minimale :
 
 Les points importants :
 
+- `global_conf.json` porte le profil radio de la passerelle SX1250 en EU868
 - `gateway_ID` doit correspondre à la sortie de `chip_id`
 - `server_address` doit être `127.0.0.1` si la pile tourne sur le même Raspberry Pi
 - `serv_port_up` et `serv_port_down` doivent tous deux viser `1700`
@@ -163,8 +171,14 @@ Exemple :
 
 ```bash
 cd packet_forwarder
-./lora_pkt_fwd -c local_conf.json
+./lora_pkt_fwd
 ```
+
+Pourquoi ne pas passer `-c local_conf.json` ici :
+
+- le packet forwarder attend le profil radio dans `global_conf.json`
+- `local_conf.json` n’est qu’une petite surcharge locale propre à la passerelle
+- lorsque les deux fichiers sont présents dans le répertoire, `lora_pkt_fwd` les charge dans l’ordre attendu
 
 ### 4. Observer les premiers signes de succès
 
@@ -198,7 +212,7 @@ Vérifier :
 - sous Raspberry Pi OS Bookworm / Trixie, ce script doit être la version du dépôt, pas le script Semtech basé sur sysfs
 - le HAT est bien enfiché
 - l’antenne est branchée
-- la configuration utilisée correspond bien à une passerelle SX1250 en EU868
+- `global_conf.json` est bien basé sur `global_conf.json.sx1250.EU868`
 
 Si des erreurs mentionnent `/sys/class/gpio`, le problème n’est généralement pas un paquet manquant. Cela signifie surtout que l’ancien helper de reset s’appuie sur une interface GPIO que les noyaux Raspberry Pi récents n’exposent plus de la même manière.
 

@@ -113,7 +113,14 @@ Keep that EUI. You will need it unchanged when creating the gateway in ChirpStac
 
 ## Configure the forwarder for this repository
 
-Keep the board-specific EU868 radio settings from the Waveshare or Semtech example that matches the SX1250-based SX1303 board. Then add a small local override for the server endpoint.
+Start from the board-specific SX1250 EU868 radio profile shipped with `sx1302_hal`, then add a small local gateway override for the server endpoint.
+
+Typical preparation in `packet_forwarder/`:
+
+```bash
+cp global_conf.json.sx1250.EU868 global_conf.json
+cp "$WORKSHOP_REPO/src/gateway/semtech-udp/local_conf.json.example" local_conf.json
+```
 
 An example file is provided at `src/gateway/semtech-udp/local_conf.json.example`.
 
@@ -132,6 +139,7 @@ Minimal override:
 
 What matters here:
 
+- `global_conf.json` carries the radio profile for the SX1250-based EU868 gateway.
 - `gateway_ID` must match the `chip_id` output.
 - `server_address` should be `127.0.0.1` when the stack runs on the same Raspberry Pi.
 - `serv_port_up` and `serv_port_down` must both target `1700`.
@@ -163,8 +171,14 @@ Example:
 
 ```bash
 cd packet_forwarder
-./lora_pkt_fwd -c local_conf.json
+./lora_pkt_fwd
 ```
+
+Why no `-c local_conf.json` here:
+
+- the packet forwarder expects the radio profile in `global_conf.json`
+- `local_conf.json` is only the small gateway-specific overlay
+- with both files present in the directory, `lora_pkt_fwd` loads them in the expected order
 
 ### 4. Check the first success signals
 
@@ -198,7 +212,7 @@ Check:
 - on Raspberry Pi OS Bookworm / Trixie, that reset script should be the repository version, not the stock Semtech sysfs script
 - the hat is seated correctly
 - the antenna is connected
-- you are using a configuration intended for an SX1250-based EU868 gateway
+- `global_conf.json` is based on `global_conf.json.sx1250.EU868`
 
 If you see errors mentioning `/sys/class/gpio`, the problem is usually not a missing package. It means the old reset helper is using a GPIO interface that recent Raspberry Pi kernels no longer expose in the same way.
 
