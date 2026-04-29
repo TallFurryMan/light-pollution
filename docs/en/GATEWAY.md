@@ -111,10 +111,10 @@ cd util_chip_id
 DEBUG_RESET=1 WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 ./reset_lgw.sh pulse
 ```
 
-In another terminal, or before and after the pulse, inspect the pin state:
+Then inspect the pin state with the helper itself:
 
 ```bash
-pinctrl get 17 18 22 13
+DEBUG_RESET=1 ./reset_lgw.sh status
 ```
 
 What you want to confirm:
@@ -124,6 +124,14 @@ What you want to confirm:
 - GPIO22 is toggled as the SX1261 reset line
 
 The final proof is not the LED. The final proof is that repeated `./chip_id` calls keep returning the same valid chip version and gateway EUI.
+
+If the GPIO states change but `chip_id` still falls back to `0x05`, the next suspect is board-specific `POWER_EN` polarity rather than the Linux GPIO interface itself. You can test that without editing the script:
+
+```bash
+DEBUG_RESET=1 SX1302_POWER_EN_ACTIVE=low WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 ./reset_lgw.sh pulse
+```
+
+If switching `SX1302_POWER_EN_ACTIVE` changes the module behavior or stabilizes repeated `chip_id` calls, your HAT revision is using the opposite power-enable polarity.
 
 ### 3. Retrieve the gateway EUI
 

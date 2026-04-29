@@ -111,10 +111,10 @@ cd util_chip_id
 DEBUG_RESET=1 WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 ./reset_lgw.sh pulse
 ```
 
-Dans un autre terminal, ou avant et après l’impulsion, observer l’état des broches :
+Puis observer l’état des broches avec le helper lui-même :
 
 ```bash
-pinctrl get 17 18 22 13
+DEBUG_RESET=1 ./reset_lgw.sh status
 ```
 
 Ce qu’il faut confirmer :
@@ -124,6 +124,14 @@ Ce qu’il faut confirmer :
 - GPIO22 est bien commutée comme ligne de reset du SX1261
 
 La preuve finale n’est pas la LED. La preuve finale est qu’une série d’appels à `./chip_id` renvoie ensuite toujours la même version valide et le même EUI de passerelle.
+
+Si les états GPIO changent bien mais que `chip_id` retombe malgré tout sur `0x05`, le suspect suivant devient la polarité réelle de `POWER_EN` pour cette révision de carte, plutôt que l’interface GPIO Linux elle-même. Il est possible de la tester sans modifier le script :
+
+```bash
+DEBUG_RESET=1 SX1302_POWER_EN_ACTIVE=low WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 ./reset_lgw.sh pulse
+```
+
+Si le fait de passer `SX1302_POWER_EN_ACTIVE` à `low` change le comportement du module ou stabilise les appels successifs à `chip_id`, alors la révision du HAT utilise la polarité inverse pour l’activation d’alimentation.
 
 ### 3. Récupérer l’EUI de la passerelle
 

@@ -64,7 +64,8 @@ class ProjectConfigTests(unittest.TestCase):
             self.assertIn("local_conf.json", content)
             self.assertIn("integration/mqtt: connected to mqtt broker", content)
             self.assertIn("DEBUG_RESET=1", content)
-            self.assertIn("pinctrl get 17 18 22 13", content)
+            self.assertIn("./reset_lgw.sh status", content)
+            self.assertIn("SX1302_POWER_EN_ACTIVE=low", content)
 
     def test_french_docs_reference_french_diagrams(self):
         architecture = (REPO_ROOT / "docs" / "fr" / "ARCHITECTURE.md").read_text()

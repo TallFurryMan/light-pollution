@@ -10,6 +10,7 @@ SX1302_RESET_PIN="${SX1302_RESET_PIN:-17}"
 SX1302_POWER_EN_PIN="${SX1302_POWER_EN_PIN:-18}"
 SX1261_RESET_PIN="${SX1261_RESET_PIN:-22}"
 AD5338R_RESET_PIN="${AD5338R_RESET_PIN:-13}"
+SX1302_POWER_EN_ACTIVE="${SX1302_POWER_EN_ACTIVE:-high}"
 
 WAIT_GPIO_SEC="${WAIT_GPIO_SEC:-0.1}"
 WAIT_POWER_DOWN_SEC="${WAIT_POWER_DOWN_SEC:-0.3}"
@@ -43,7 +44,10 @@ show_pin() {
 
 show_all_pins() {
     if [ "${DEBUG_RESET}" = "1" ]; then
-        pinctrl get "${SX1302_RESET_PIN}" "${SX1302_POWER_EN_PIN}" "${SX1261_RESET_PIN}" "${AD5338R_RESET_PIN}"
+        show_pin "${SX1302_RESET_PIN}"
+        show_pin "${SX1302_POWER_EN_PIN}"
+        show_pin "${SX1261_RESET_PIN}"
+        show_pin "${AD5338R_RESET_PIN}"
     fi
 }
 
@@ -62,6 +66,36 @@ release_pin() {
     show_pin "$1"
 }
 
+power_enable_on() {
+    case "${SX1302_POWER_EN_ACTIVE}" in
+        high)
+            set_output_high "${SX1302_POWER_EN_PIN}"
+            ;;
+        low)
+            set_output_low "${SX1302_POWER_EN_PIN}"
+            ;;
+        *)
+            echo "ERROR: SX1302_POWER_EN_ACTIVE must be 'high' or 'low'" >&2
+            exit 1
+            ;;
+    esac
+}
+
+power_enable_off() {
+    case "${SX1302_POWER_EN_ACTIVE}" in
+        high)
+            set_output_low "${SX1302_POWER_EN_PIN}"
+            ;;
+        low)
+            set_output_high "${SX1302_POWER_EN_PIN}"
+            ;;
+        *)
+            echo "ERROR: SX1302_POWER_EN_ACTIVE must be 'high' or 'low'" >&2
+            exit 1
+            ;;
+    esac
+}
+
 reset() {
     echo "CoreCell reset through GPIO${SX1302_RESET_PIN}..."
     echo "SX1261 reset through GPIO${SX1261_RESET_PIN}..."
@@ -72,10 +106,10 @@ reset() {
     # Force a real power cycle first. This avoids the "first run works, second
     # run returns 0x05" pattern seen when the concentrator stays half-alive
     # across successive tool invocations.
-    set_output_low "${SX1302_POWER_EN_PIN}"
+    power_enable_off
     WAIT_POWER_DOWN
 
-    set_output_high "${SX1302_POWER_EN_PIN}"
+    power_enable_on
     WAIT_POWER_UP
 
     set_output_high "${SX1302_RESET_PIN}"
@@ -97,7 +131,7 @@ reset() {
 
 term() {
     echo "GPIO term"
-    set_output_low "${SX1302_POWER_EN_PIN}"
+    power_enable_off
     WAIT_POWER_DOWN
     release_pin "${SX1302_RESET_PIN}"
     release_pin "${SX1302_POWER_EN_PIN}"
@@ -112,16 +146,16 @@ status() {
 
 pulse() {
     echo "Debug pulse on GPIO${SX1302_POWER_EN_PIN}"
-    set_output_low "${SX1302_POWER_EN_PIN}"
+    power_enable_off
     WAIT_POWER_DOWN
-    set_output_high "${SX1302_POWER_EN_PIN}"
+    power_enable_on
     WAIT_POWER_UP
     show_all_pins
 }
 
 usage() {
     echo "Usage: $0 {start|stop|status|pulse}"
-    echo "Optional env: DEBUG_RESET=1 WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 WAIT_GPIO_SEC=0.2"
+    echo "Optional env: DEBUG_RESET=1 WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 WAIT_GPIO_SEC=0.2 SX1302_POWER_EN_ACTIVE=high"
     exit 1
 }
 
