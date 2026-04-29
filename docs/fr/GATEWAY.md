@@ -120,7 +120,7 @@ DEBUG_RESET=1 ./reset_lgw.sh status
 Ce qu’il faut confirmer :
 
 - GPIO18 change bien d’état pendant l’impulsion, car c’est actuellement la ligne `POWER_EN`
-- GPIO17 est bien commutée comme ligne de reset du concentrateur
+- GPIO23 est bien commutée comme ligne de reset du concentrateur
 - GPIO22 est bien commutée comme ligne de reset du SX1261
 
 La preuve finale n’est pas la LED. La preuve finale est qu’une série d’appels à `./chip_id` renvoie ensuite toujours la même version valide et le même EUI de passerelle.
@@ -132,6 +132,13 @@ DEBUG_RESET=1 SX1302_POWER_EN_ACTIVE=low WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC
 ```
 
 Si le fait de passer `SX1302_POWER_EN_ACTIVE` à `low` change le comportement du module ou stabilise les appels successifs à `chip_id`, alors la révision du HAT utilise la polarité inverse pour l’activation d’alimentation.
+
+Cartographie de broches validée comme référence pour le HAT Waveshare SX1303 Raspberry Pi utilisé dans ce projet :
+
+- `SX1302_RESET_PIN=23`
+- `SX1261_RESET_PIN=22`
+- `SX1302_POWER_EN_PIN=18`
+- `AD5338R_RESET_PIN=13`
 
 ### 3. Récupérer l’EUI de la passerelle
 

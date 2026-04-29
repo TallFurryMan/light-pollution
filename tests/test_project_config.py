@@ -38,6 +38,9 @@ class ProjectConfigTests(unittest.TestCase):
         path = REPO_ROOT / "src" / "gateway" / "semtech-udp" / "reset_lgw.sh"
         self.assertTrue(path.exists())
         subprocess.run(["/bin/sh", "-n", str(path)], check=True)
+        content = path.read_text()
+        self.assertIn('SX1302_RESET_PIN="${SX1302_RESET_PIN:-23}"', content)
+        self.assertIn('SX1261_RESET_PIN="${SX1261_RESET_PIN:-22}"', content)
 
     def test_gateway_bridge_uses_mosquitto_service_name(self):
         config = (REPO_ROOT / "src" / "chirpstack-gateway-bridge" / "chirpstack-gateway-bridge.toml").read_text()
@@ -66,6 +69,8 @@ class ProjectConfigTests(unittest.TestCase):
             self.assertIn("DEBUG_RESET=1", content)
             self.assertIn("./reset_lgw.sh status", content)
             self.assertIn("SX1302_POWER_EN_ACTIVE=low", content)
+            self.assertIn("SX1302_RESET_PIN=23", content)
+            self.assertIn("SX1261_RESET_PIN=22", content)
 
     def test_french_docs_reference_french_diagrams(self):
         architecture = (REPO_ROOT / "docs" / "fr" / "ARCHITECTURE.md").read_text()

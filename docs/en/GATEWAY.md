@@ -120,7 +120,7 @@ DEBUG_RESET=1 ./reset_lgw.sh status
 What you want to confirm:
 
 - GPIO18 changes state during the pulse, because it is the current `POWER_EN` line
-- GPIO17 is toggled as the concentrator reset line
+- GPIO23 is toggled as the concentrator reset line
 - GPIO22 is toggled as the SX1261 reset line
 
 The final proof is not the LED. The final proof is that repeated `./chip_id` calls keep returning the same valid chip version and gateway EUI.
@@ -132,6 +132,13 @@ DEBUG_RESET=1 SX1302_POWER_EN_ACTIVE=low WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC
 ```
 
 If switching `SX1302_POWER_EN_ACTIVE` changes the module behavior or stabilizes repeated `chip_id` calls, your HAT revision is using the opposite power-enable polarity.
+
+Validated reference pin mapping for the Waveshare SX1303 Raspberry Pi HAT used in this project:
+
+- `SX1302_RESET_PIN=23`
+- `SX1261_RESET_PIN=22`
+- `SX1302_POWER_EN_PIN=18`
+- `AD5338R_RESET_PIN=13`
 
 ### 3. Retrieve the gateway EUI
 
