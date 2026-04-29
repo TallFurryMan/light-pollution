@@ -39,6 +39,14 @@ class ProjectConfigTests(unittest.TestCase):
         self.assertTrue(path.exists())
         subprocess.run(["/bin/sh", "-n", str(path)], check=True)
 
+    def test_gateway_bridge_uses_mosquitto_service_name(self):
+        config = (REPO_ROOT / "src" / "chirpstack-gateway-bridge" / "chirpstack-gateway-bridge.toml").read_text()
+        compose = (REPO_ROOT / "src" / "docker-compose.yml").read_text()
+        self.assertIn('servers=[', config)
+        self.assertIn('"tcp://mosquitto:1883"', config)
+        self.assertIn('./chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge:ro', compose)
+        self.assertIn('condition: service_healthy', compose)
+
     def test_readme_links_to_gateway_docs(self):
         content = (REPO_ROOT / "README.md").read_text()
         self.assertIn("/light-pollution/fr/gateway/", content)
@@ -54,6 +62,7 @@ class ProjectConfigTests(unittest.TestCase):
             self.assertIn("reset_lgw.sh", content)
             self.assertIn("global_conf.json.sx1250.EU868", content)
             self.assertIn("local_conf.json", content)
+            self.assertIn("integration/mqtt: connected to mqtt broker", content)
 
     def test_french_docs_reference_french_diagrams(self):
         architecture = (REPO_ROOT / "docs" / "fr" / "ARCHITECTURE.md").read_text()

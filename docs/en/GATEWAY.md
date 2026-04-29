@@ -156,6 +156,13 @@ docker logs gateway_bridge --tail 50
 
 You want `gateway_bridge` running before you start the forwarder.
 
+Expected log lines at this stage include:
+
+- `integration/mqtt: connected to mqtt broker`
+- `backend/semtechudp: starting gateway udp listener`
+
+If you still see `dial tcp 127.0.0.1:1883: connect: connection refused`, the bridge is still using its default local MQTT target instead of the repository configuration.
+
 ### 2. Create the gateway in ChirpStack
 
 Open `http://localhost:8087`, then:
