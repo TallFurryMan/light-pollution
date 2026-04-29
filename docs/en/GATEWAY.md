@@ -100,6 +100,31 @@ Why this matters:
 - Raspberry Pi OS moved away from the old sysfs GPIO interface on recent kernels.
 - The replacement script in this repository uses `pinctrl`, which is the Raspberry Pi OS-native path for this use case.
 
+### 2.c Prove that the reset helper is really toggling the pins
+
+Do not rely on the red SX module LED alone. It may not be tied directly to `POWER_EN`, and a short low pulse can be too fast to spot by eye.
+
+Use the helper in debug mode instead:
+
+```bash
+cd util_chip_id
+DEBUG_RESET=1 WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 ./reset_lgw.sh pulse
+```
+
+In another terminal, or before and after the pulse, inspect the pin state:
+
+```bash
+pinctrl get 17 18 22 13
+```
+
+What you want to confirm:
+
+- GPIO18 changes state during the pulse, because it is the current `POWER_EN` line
+- GPIO17 is toggled as the concentrator reset line
+- GPIO22 is toggled as the SX1261 reset line
+
+The final proof is not the LED. The final proof is that repeated `./chip_id` calls keep returning the same valid chip version and gateway EUI.
+
 ### 3. Retrieve the gateway EUI
 
 The gateway ID used by ChirpStack comes from the concentrator tooling:

@@ -11,16 +11,21 @@ SX1302_POWER_EN_PIN="${SX1302_POWER_EN_PIN:-18}"
 SX1261_RESET_PIN="${SX1261_RESET_PIN:-22}"
 AD5338R_RESET_PIN="${AD5338R_RESET_PIN:-13}"
 
+WAIT_GPIO_SEC="${WAIT_GPIO_SEC:-0.1}"
+WAIT_POWER_DOWN_SEC="${WAIT_POWER_DOWN_SEC:-0.3}"
+WAIT_POWER_UP_SEC="${WAIT_POWER_UP_SEC:-0.3}"
+DEBUG_RESET="${DEBUG_RESET:-0}"
+
 WAIT_GPIO() {
-    sleep 0.1
+    sleep "${WAIT_GPIO_SEC}"
 }
 
 WAIT_POWER_DOWN() {
-    sleep 0.3
+    sleep "${WAIT_POWER_DOWN_SEC}"
 }
 
 WAIT_POWER_UP() {
-    sleep 0.3
+    sleep "${WAIT_POWER_UP_SEC}"
 }
 
 require_pinctrl() {
@@ -30,16 +35,31 @@ require_pinctrl() {
     fi
 }
 
+show_pin() {
+    if [ "${DEBUG_RESET}" = "1" ]; then
+        pinctrl get "$1"
+    fi
+}
+
+show_all_pins() {
+    if [ "${DEBUG_RESET}" = "1" ]; then
+        pinctrl get "${SX1302_RESET_PIN}" "${SX1302_POWER_EN_PIN}" "${SX1261_RESET_PIN}" "${AD5338R_RESET_PIN}"
+    fi
+}
+
 set_output_high() {
     pinctrl set "$1" op dh
+    show_pin "$1"
 }
 
 set_output_low() {
     pinctrl set "$1" op dl
+    show_pin "$1"
 }
 
 release_pin() {
     pinctrl set "$1" ip pn
+    show_pin "$1"
 }
 
 reset() {
@@ -47,6 +67,7 @@ reset() {
     echo "SX1261 reset through GPIO${SX1261_RESET_PIN}..."
     echo "CoreCell power enable through GPIO${SX1302_POWER_EN_PIN}..."
     echo "CoreCell ADC reset through GPIO${AD5338R_RESET_PIN}..."
+    show_all_pins
 
     # Force a real power cycle first. This avoids the "first run works, second
     # run returns 0x05" pattern seen when the concentrator stays half-alive
@@ -71,6 +92,7 @@ reset() {
     WAIT_GPIO
     set_output_high "${AD5338R_RESET_PIN}"
     WAIT_GPIO
+    show_all_pins
 }
 
 term() {
@@ -81,10 +103,25 @@ term() {
     release_pin "${SX1302_POWER_EN_PIN}"
     release_pin "${SX1261_RESET_PIN}"
     release_pin "${AD5338R_RESET_PIN}"
+    show_all_pins
+}
+
+status() {
+    show_all_pins
+}
+
+pulse() {
+    echo "Debug pulse on GPIO${SX1302_POWER_EN_PIN}"
+    set_output_low "${SX1302_POWER_EN_PIN}"
+    WAIT_POWER_DOWN
+    set_output_high "${SX1302_POWER_EN_PIN}"
+    WAIT_POWER_UP
+    show_all_pins
 }
 
 usage() {
-    echo "Usage: $0 {start|stop}"
+    echo "Usage: $0 {start|stop|status|pulse}"
+    echo "Optional env: DEBUG_RESET=1 WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 WAIT_GPIO_SEC=0.2"
     exit 1
 }
 
@@ -98,6 +135,12 @@ case "${1:-}" in
     stop)
         reset
         term
+        ;;
+    status)
+        status
+        ;;
+    pulse)
+        pulse
         ;;
     *)
         usage

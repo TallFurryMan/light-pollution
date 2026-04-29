@@ -100,6 +100,31 @@ Pourquoi :
 - Raspberry Pi OS s’éloigne de cette interface sysfs sur les noyaux récents
 - le script de remplacement du dépôt utilise `pinctrl`, qui correspond au chemin natif Raspberry Pi OS pour ce cas
 
+### 2.c Vérifier que le helper de reset agit vraiment sur les broches
+
+Ne pas se fier uniquement à la LED rouge du module SX. Elle n’est pas forcément câblée directement sur `POWER_EN`, et une impulsion basse courte peut être trop rapide pour être visible à l’œil nu.
+
+Utiliser plutôt le helper en mode debug :
+
+```bash
+cd util_chip_id
+DEBUG_RESET=1 WAIT_POWER_DOWN_SEC=2 WAIT_POWER_UP_SEC=2 ./reset_lgw.sh pulse
+```
+
+Dans un autre terminal, ou avant et après l’impulsion, observer l’état des broches :
+
+```bash
+pinctrl get 17 18 22 13
+```
+
+Ce qu’il faut confirmer :
+
+- GPIO18 change bien d’état pendant l’impulsion, car c’est actuellement la ligne `POWER_EN`
+- GPIO17 est bien commutée comme ligne de reset du concentrateur
+- GPIO22 est bien commutée comme ligne de reset du SX1261
+
+La preuve finale n’est pas la LED. La preuve finale est qu’une série d’appels à `./chip_id` renvoie ensuite toujours la même version valide et le même EUI de passerelle.
+
 ### 3. Récupérer l’EUI de la passerelle
 
 L’identifiant de passerelle utilisé par ChirpStack vient de l’outil du concentrateur :
